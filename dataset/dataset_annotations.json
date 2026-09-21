@@ -1,0 +1,1202 @@
+[
+    {
+        "filename": "pass/id_001.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "26_1_1_20170116231937264.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_001.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "26_1_1_20170116231937264.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_001.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "26_1_1_20170116231937264.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_001.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "26_1_1_20170116231937264.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_002.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "24_1_2_20170116174501132.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_002.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "24_1_2_20170116174501132.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_002.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "24_1_2_20170116174501132.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_002.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "24_1_2_20170116174501132.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_003.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "26_1_0_20170117003245354.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_003.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "26_1_0_20170117003245354.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_003.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "26_1_0_20170117003245354.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_003.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "26_1_0_20170117003245354.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_004.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "26_1_3_20170119193121281.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_004.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "26_1_3_20170119193121281.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_004.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "26_1_3_20170119193121281.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_004.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "26_1_3_20170119193121281.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_005.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "18_1_2_20170104020841204.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_005.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "18_1_2_20170104020841204.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_005.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "18_1_2_20170104020841204.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_005.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "18_1_2_20170104020841204.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_006.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "34_1_0_20170113000558603.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_006.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "34_1_0_20170113000558603.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_006.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "34_1_0_20170113000558603.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_006.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "34_1_0_20170113000558603.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_007.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "32_0_1_20170117021627922.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_007.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "32_0_1_20170117021627922.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_007.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "32_0_1_20170117021627922.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_007.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "32_0_1_20170117021627922.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_008.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "50_1_0_20170110153432618.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_008.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "50_1_0_20170110153432618.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_008.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "50_1_0_20170110153432618.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_008.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "50_1_0_20170110153432618.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_009.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "35_0_1_20170117095820209.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_009.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "35_0_1_20170117095820209.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_009.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "35_0_1_20170117095820209.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_009.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "35_0_1_20170117095820209.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_010.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "29_1_4_20170103224739152.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_010.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "29_1_4_20170103224739152.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_010.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "29_1_4_20170103224739152.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_010.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "29_1_4_20170103224739152.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_011.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "35_0_0_20170117171756675.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_011.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "35_0_0_20170117171756675.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_011.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "35_0_0_20170117171756675.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_011.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "35_0_0_20170117171756675.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_012.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "32_0_4_20170117203107295.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_012.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "32_0_4_20170117203107295.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_012.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "32_0_4_20170117203107295.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_012.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "32_0_4_20170117203107295.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_013.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "72_1_1_20170120225033578.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_013.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "72_1_1_20170120225033578.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_013.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "72_1_1_20170120225033578.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_013.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "72_1_1_20170120225033578.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_014.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "53_0_1_20170113174111826.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_014.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "53_0_1_20170113174111826.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_014.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "53_0_1_20170113174111826.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_014.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "53_0_1_20170113174111826.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_015.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "28_1_0_20170117122005148.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_015.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "28_1_0_20170117122005148.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_015.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "28_1_0_20170117122005148.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_015.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "28_1_0_20170117122005148.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_016.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "48_0_0_20170104212127187.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_016.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "48_0_0_20170104212127187.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_016.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "48_0_0_20170104212127187.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_016.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "48_0_0_20170104212127187.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_017.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "66_0_0_20170120225917395.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_017.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "66_0_0_20170120225917395.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_017.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "66_0_0_20170120225917395.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_017.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "66_0_0_20170120225917395.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_018.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "40_1_0_20170116235449020.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_018.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "40_1_0_20170116235449020.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_018.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "40_1_0_20170116235449020.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_018.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "40_1_0_20170116235449020.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_019.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "24_1_1_20170115235615800.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_019.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "24_1_1_20170115235615800.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_019.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "24_1_1_20170115235615800.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_019.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "24_1_1_20170115235615800.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_020.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "32_0_1_20170113134154346.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_020.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "32_0_1_20170113134154346.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_020.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "32_0_1_20170113134154346.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_020.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "32_0_1_20170113134154346.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_021.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "52_0_0_20170117161015463.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_021.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "52_0_0_20170117161015463.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_021.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "52_0_0_20170117161015463.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_021.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "52_0_0_20170117161015463.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_022.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "55_0_0_20170117000800699.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_022.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "55_0_0_20170117000800699.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_022.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "55_0_0_20170117000800699.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_022.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "55_0_0_20170117000800699.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_023.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "27_0_0_20170116204141166.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_023.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "27_0_0_20170116204141166.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_023.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "27_0_0_20170116204141166.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_023.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "27_0_0_20170116204141166.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_024.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "36_0_0_20170117162433077.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_024.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "36_0_0_20170117162433077.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_024.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "36_0_0_20170117162433077.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_024.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "36_0_0_20170117162433077.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_025.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "30_1_0_20170117154828262.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_025.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "30_1_0_20170117154828262.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_025.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "30_1_0_20170117154828262.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_025.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "30_1_0_20170117154828262.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_026.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "37_0_0_20170104185229157.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_026.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "37_0_0_20170104185229157.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_026.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "37_0_0_20170104185229157.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_026.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "37_0_0_20170104185229157.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_027.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "28_1_1_20170116225303264.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_027.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "28_1_1_20170116225303264.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_027.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "28_1_1_20170116225303264.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_027.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "28_1_1_20170116225303264.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_028.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "32_0_0_20170117133447180.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_028.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "32_0_0_20170117133447180.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_028.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "32_0_0_20170117133447180.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_028.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "32_0_0_20170117133447180.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_029.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "26_1_0_20170117131041963.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_029.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "26_1_0_20170117131041963.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_029.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "26_1_0_20170117131041963.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_029.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "26_1_0_20170117131041963.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_030.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "25_0_3_20170104214558568.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_030.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "25_0_3_20170104214558568.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_030.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "25_0_3_20170104214558568.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_030.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "25_0_3_20170104214558568.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_031.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "52_0_1_20170113174958212.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_031.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "52_0_1_20170113174958212.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_031.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "52_0_1_20170113174958212.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_031.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "52_0_1_20170113174958212.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_032.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "36_1_0_20170117135859295.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_032.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "36_1_0_20170117135859295.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_032.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "36_1_0_20170117135859295.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_032.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "36_1_0_20170117135859295.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_033.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "24_0_4_20170117194332787.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_033.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "24_0_4_20170117194332787.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_033.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "24_0_4_20170117194332787.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_033.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "24_0_4_20170117194332787.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_034.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "35_1_1_20170113195518309.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_034.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "35_1_1_20170113195518309.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_034.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "35_1_1_20170113195518309.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_034.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "35_1_1_20170113195518309.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_035.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "42_0_0_20170117154744705.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_035.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "42_0_0_20170117154744705.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_035.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "42_0_0_20170117154744705.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_035.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "42_0_0_20170117154744705.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_036.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "22_1_2_20170116172726806.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_036.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "22_1_2_20170116172726806.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_036.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "22_1_2_20170116172726806.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_036.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "22_1_2_20170116172726806.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_037.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "86_0_0_20170112224722395.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_037.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "86_0_0_20170112224722395.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_037.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "86_0_0_20170112224722395.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_037.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "86_0_0_20170112224722395.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_038.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "57_0_0_20170117172537601.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_038.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "57_0_0_20170117172537601.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_038.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "57_0_0_20170117172537601.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_038.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "57_0_0_20170117172537601.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_039.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "32_0_2_20170116184944206.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_039.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "32_0_2_20170116184944206.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_039.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "32_0_2_20170116184944206.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_039.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "32_0_2_20170116184944206.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_040.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "60_0_0_20170104212556604.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_040.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "60_0_0_20170104212556604.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_040.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "60_0_0_20170104212556604.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_040.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "60_0_0_20170104212556604.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_041.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "29_0_2_20170116162050789.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_041.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "29_0_2_20170116162050789.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_041.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "29_0_2_20170116162050789.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_041.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "29_0_2_20170116162050789.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_042.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "43_1_0_20170117155109008.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_042.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "43_1_0_20170117155109008.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_042.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "43_1_0_20170117155109008.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_042.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "43_1_0_20170117155109008.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_043.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "24_0_3_20170119165947103.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_043.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "24_0_3_20170119165947103.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_043.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "24_0_3_20170119165947103.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_043.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "24_0_3_20170119165947103.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_044.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "40_0_2_20170116191822336.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_044.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "40_0_2_20170116191822336.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_044.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "40_0_2_20170116191822336.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_044.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "40_0_2_20170116191822336.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_045.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "86_1_0_20170110183850108.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_045.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "86_1_0_20170110183850108.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_045.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "86_1_0_20170110183850108.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_045.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "86_1_0_20170110183850108.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_046.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "28_0_3_20170119194508397.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_046.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "28_0_3_20170119194508397.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_046.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "28_0_3_20170119194508397.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_046.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "28_0_3_20170119194508397.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_047.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "55_0_3_20170119201207516.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_047.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "55_0_3_20170119201207516.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_047.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "55_0_3_20170119201207516.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_047.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "55_0_3_20170119201207516.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_048.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "54_1_0_20170109010202728.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_048.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "54_1_0_20170109010202728.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_048.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "54_1_0_20170109010202728.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_048.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "54_1_0_20170109010202728.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_049.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "55_0_0_20170117185717337.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_049.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "55_0_0_20170117185717337.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_049.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "55_0_0_20170117185717337.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_049.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "55_0_0_20170117185717337.jpg.chip.jpg"
+    },
+    {
+        "filename": "pass/id_050.jpg",
+        "label": "PASS",
+        "reason": "None",
+        "source_file": "63_0_0_20170120225659313.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_blur/id_050.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BLUR",
+        "source_file": "63_0_0_20170120225659313.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_dark/id_050.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_DARK",
+        "source_file": "63_0_0_20170120225659313.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_overexposed/id_050.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_OVEREXPOSED",
+        "source_file": "63_0_0_20170120225659313.jpg.chip.jpg"
+    }
+]
