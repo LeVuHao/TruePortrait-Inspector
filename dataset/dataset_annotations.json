@@ -1198,5 +1198,905 @@
         "label": "FAIL",
         "reason": "FAIL_OVEREXPOSED",
         "source_file": "63_0_0_20170120225659313.jpg.chip.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_001.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_001.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_001.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_001.jpg"
+    },
+    {
+        "filename": "fail_background/id_001.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_001.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_002.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_002.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_002.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_002.jpg"
+    },
+    {
+        "filename": "fail_background/id_002.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_002.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_003.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_003.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_003.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_003.jpg"
+    },
+    {
+        "filename": "fail_background/id_003.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_003.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_004.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_004.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_004.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_004.jpg"
+    },
+    {
+        "filename": "fail_background/id_004.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_004.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_005.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_005.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_005.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_005.jpg"
+    },
+    {
+        "filename": "fail_background/id_005.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_005.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_006.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_006.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_006.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_006.jpg"
+    },
+    {
+        "filename": "fail_background/id_006.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_006.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_007.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_007.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_007.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_007.jpg"
+    },
+    {
+        "filename": "fail_background/id_007.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_007.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_008.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_008.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_008.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_008.jpg"
+    },
+    {
+        "filename": "fail_background/id_008.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_008.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_009.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_009.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_009.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_009.jpg"
+    },
+    {
+        "filename": "fail_background/id_009.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_009.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_010.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_010.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_010.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_010.jpg"
+    },
+    {
+        "filename": "fail_background/id_010.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_010.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_011.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_011.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_011.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_011.jpg"
+    },
+    {
+        "filename": "fail_background/id_011.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_011.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_012.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_012.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_012.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_012.jpg"
+    },
+    {
+        "filename": "fail_background/id_012.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_012.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_013.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_013.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_013.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_013.jpg"
+    },
+    {
+        "filename": "fail_background/id_013.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_013.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_014.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_014.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_014.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_014.jpg"
+    },
+    {
+        "filename": "fail_background/id_014.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_014.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_015.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_015.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_015.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_015.jpg"
+    },
+    {
+        "filename": "fail_background/id_015.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_015.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_016.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_016.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_016.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_016.jpg"
+    },
+    {
+        "filename": "fail_background/id_016.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_016.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_017.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_017.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_017.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_017.jpg"
+    },
+    {
+        "filename": "fail_background/id_017.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_017.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_018.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_018.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_018.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_018.jpg"
+    },
+    {
+        "filename": "fail_background/id_018.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_018.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_019.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_019.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_019.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_019.jpg"
+    },
+    {
+        "filename": "fail_background/id_019.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_019.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_020.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_020.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_020.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_020.jpg"
+    },
+    {
+        "filename": "fail_background/id_020.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_020.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_021.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_021.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_021.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_021.jpg"
+    },
+    {
+        "filename": "fail_background/id_021.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_021.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_022.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_022.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_022.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_022.jpg"
+    },
+    {
+        "filename": "fail_background/id_022.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_022.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_023.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_023.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_023.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_023.jpg"
+    },
+    {
+        "filename": "fail_background/id_023.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_023.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_024.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_024.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_024.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_024.jpg"
+    },
+    {
+        "filename": "fail_background/id_024.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_024.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_025.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_025.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_025.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_025.jpg"
+    },
+    {
+        "filename": "fail_background/id_025.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_025.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_026.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_026.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_026.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_026.jpg"
+    },
+    {
+        "filename": "fail_background/id_026.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_026.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_027.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_027.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_027.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_027.jpg"
+    },
+    {
+        "filename": "fail_background/id_027.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_027.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_028.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_028.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_028.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_028.jpg"
+    },
+    {
+        "filename": "fail_background/id_028.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_028.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_029.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_029.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_029.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_029.jpg"
+    },
+    {
+        "filename": "fail_background/id_029.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_029.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_030.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_030.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_030.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_030.jpg"
+    },
+    {
+        "filename": "fail_background/id_030.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_030.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_031.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_031.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_031.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_031.jpg"
+    },
+    {
+        "filename": "fail_background/id_031.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_031.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_032.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_032.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_032.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_032.jpg"
+    },
+    {
+        "filename": "fail_background/id_032.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_032.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_033.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_033.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_033.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_033.jpg"
+    },
+    {
+        "filename": "fail_background/id_033.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_033.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_034.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_034.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_034.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_034.jpg"
+    },
+    {
+        "filename": "fail_background/id_034.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_034.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_035.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_035.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_035.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_035.jpg"
+    },
+    {
+        "filename": "fail_background/id_035.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_035.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_036.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_036.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_036.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_036.jpg"
+    },
+    {
+        "filename": "fail_background/id_036.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_036.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_037.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_037.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_037.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_037.jpg"
+    },
+    {
+        "filename": "fail_background/id_037.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_037.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_038.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_038.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_038.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_038.jpg"
+    },
+    {
+        "filename": "fail_background/id_038.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_038.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_039.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_039.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_039.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_039.jpg"
+    },
+    {
+        "filename": "fail_background/id_039.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_039.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_040.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_040.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_040.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_040.jpg"
+    },
+    {
+        "filename": "fail_background/id_040.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_040.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_041.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_041.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_041.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_041.jpg"
+    },
+    {
+        "filename": "fail_background/id_041.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_041.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_042.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_042.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_042.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_042.jpg"
+    },
+    {
+        "filename": "fail_background/id_042.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_042.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_043.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_043.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_043.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_043.jpg"
+    },
+    {
+        "filename": "fail_background/id_043.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_043.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_044.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_044.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_044.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_044.jpg"
+    },
+    {
+        "filename": "fail_background/id_044.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_044.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_045.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_045.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_045.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_045.jpg"
+    },
+    {
+        "filename": "fail_background/id_045.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_045.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_046.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_046.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_046.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_046.jpg"
+    },
+    {
+        "filename": "fail_background/id_046.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_046.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_047.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_047.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_047.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_047.jpg"
+    },
+    {
+        "filename": "fail_background/id_047.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_047.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_048.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_048.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_048.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_048.jpg"
+    },
+    {
+        "filename": "fail_background/id_048.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_048.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_049.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_049.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_049.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_049.jpg"
+    },
+    {
+        "filename": "fail_background/id_049.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_049.jpg"
+    },
+    {
+        "filename": "fail_face_count/id_050.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_COUNT",
+        "source_file": "id_050.jpg"
+    },
+    {
+        "filename": "fail_face_size/id_050.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_FACE_SIZE",
+        "source_file": "id_050.jpg"
+    },
+    {
+        "filename": "fail_background/id_050.jpg",
+        "label": "FAIL",
+        "reason": "FAIL_BACKGROUND",
+        "source_file": "id_050.jpg"
     }
 ]

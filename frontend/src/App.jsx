@@ -14,7 +14,8 @@ import {
   Square, 
   BarChart2, 
   RotateCcw,
-  Sparkles
+  Sparkles,
+  Lightbulb
 } from 'lucide-react';
 
 export default function App() {
@@ -395,12 +396,23 @@ export default function App() {
                 {/* Danh sách lỗi và lời khuyên */}
                 {result.reasons && result.reasons.length > 0 && (
                   <div className="reasons-container">
-                    <div className="reasons-title">
-                      <AlertTriangle size={16} /> Các điểm cần khắc phục:
-                    </div>
                     <ul className="reasons-list">
                       {result.reasons.map((r, i) => (
                         <li key={i}>{r}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Danh sách lời khuyên */}
+                {result.recommendations && result.recommendations.length > 0 && (
+                  <div className="reasons-container" style={{ marginTop: '1rem', background: 'rgba(16, 185, 129, 0.05)', borderColor: 'rgba(16, 185, 129, 0.2)' }}>
+                    <div className="reasons-title" style={{ color: 'var(--success)' }}>
+                      <Lightbulb size={16} /> Lời khuyên khắc phục (Recommendations):
+                    </div>
+                    <ul className="reasons-list" style={{ color: 'var(--text-secondary)' }}>
+                      {result.recommendations.map((rec, i) => (
+                        <li key={i}>{rec}</li>
                       ))}
                     </ul>
                   </div>

@@ -38,7 +38,7 @@ PRESET_CONFIGS = {
         },
         "background_uniformity": {
             # Độ lệch chuẩn màu (Std Dev) tối đa tại các vùng ROI nền 4 góc
-            "max_color_std": 18.0,
+            "max_color_std": 1.5,
         }
     }
 }
