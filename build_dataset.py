@@ -42,6 +42,9 @@ PASS_DIR   = os.path.join(OUT_DIR, "pass")
 BLUR_DIR   = os.path.join(OUT_DIR, "fail_blur")
 DARK_DIR   = os.path.join(OUT_DIR, "fail_dark")
 BRIGHT_DIR = os.path.join(OUT_DIR, "fail_overexposed")
+FACE_COUNT_DIR = os.path.join(OUT_DIR, "fail_face_count")
+FACE_SIZE_DIR  = os.path.join(OUT_DIR, "fail_face_size")
+BG_DIR         = os.path.join(OUT_DIR, "fail_background")
 
 # Kich thuoc anh the chuan (ty le 3:4)
 TARGET_W, TARGET_H = 600, 800
@@ -155,6 +158,69 @@ def make_overexposed(img: np.ndarray) -> np.ndarray:
     return cv2.convertScaleAbs(img, alpha=1.70, beta=50)
 
 
+def make_fail_face_count(face_img: np.ndarray) -> np.ndarray:
+    """Tao loi 2 khuon mat tren cung mot anh."""
+    canvas = np.full((TARGET_H, TARGET_W, 3), 255, dtype=np.uint8)
+    face_h = int(TARGET_H * 0.50)
+    face_w = int(face_h * face_img.shape[1] / face_img.shape[0])
+    face_resized = cv2.resize(face_img, (face_w, face_h))
+    y = int(TARGET_H * 0.15)
+    
+    # Dan mat 1 (lech trai)
+    x1 = (TARGET_W // 2) - face_w + 20
+    x1_end = min(max(0, x1) + face_w, TARGET_W)
+    y_end = min(y + face_h, TARGET_H)
+    canvas[y:y_end, max(0, x1):x1_end] = face_resized[:y_end-y, :x1_end-max(0, x1)]
+    
+    # Dan mat 2 (lech phai)
+    x2 = (TARGET_W // 2) - 20
+    x2_end = min(x2 + face_w, TARGET_W)
+    canvas[y:y_end, x2:x2_end] = face_resized[:y_end-y, :x2_end-x2]
+    
+    return canvas
+
+
+def make_fail_face_size(face_img: np.ndarray) -> np.ndarray:
+    """Tao loi khuon mat qua nho (< 45% chieu cao anh)."""
+    canvas = np.full((TARGET_H, TARGET_W, 3), 255, dtype=np.uint8)
+    # Khuon mat chi chiem 30% chieu cao (Fail Face Height Ratio)
+    face_h = int(TARGET_H * 0.30)
+    face_w = int(face_h * face_img.shape[1] / face_img.shape[0])
+    face_resized = cv2.resize(face_img, (face_w, face_h))
+    
+    x = (TARGET_W - face_w) // 2
+    y = int(TARGET_H * 0.25)
+    y2 = min(y + face_h, TARGET_H)
+    x2 = min(x + face_w, TARGET_W)
+    canvas[y:y2, x:x2] = face_resized[:y2-y, :x2-x]
+    
+    return canvas
+
+
+def make_fail_background(face_img: np.ndarray) -> np.ndarray:
+    """Tao loi nen phia sau khong dong nhat (nen gradient)."""
+    canvas = np.zeros((TARGET_H, TARGET_W, 3), dtype=np.uint8)
+    
+    # Tao gradient tu den den xam nhat
+    for y in range(TARGET_H):
+        val = int(255 * (y / TARGET_H))
+        canvas[y, :] = (val, val, val)
+        
+    face_h = int(TARGET_H * 0.58)
+    face_w = int(face_h * face_img.shape[1] / face_img.shape[0])
+    face_resized = cv2.resize(face_img, (face_w, face_h))
+    
+    x = (TARGET_W - face_w) // 2
+    y = int(TARGET_H * 0.12)
+    y2 = min(y + face_h, TARGET_H)
+    x2 = min(x + face_w, TARGET_W)
+    
+    # Tao mask nhe de chong mat len nen
+    canvas[y:y2, x:x2] = face_resized[:y2-y, :x2-x]
+    
+    return canvas
+
+
 # ---------------------------------------------------------------
 # 6. MAIN
 # ---------------------------------------------------------------
@@ -216,7 +282,7 @@ def main():
         print(f"[!] Chi chon duoc {len(selected)} / {NUM_SELECTED}. Tang MIN_FILE_SIZE_KB hoac ha nguong neu can them.")
 
     # Tao cac thu muc output
-    for d in [PASS_DIR, BLUR_DIR, DARK_DIR, BRIGHT_DIR]:
+    for d in [PASS_DIR, BLUR_DIR, DARK_DIR, BRIGHT_DIR, FACE_COUNT_DIR, FACE_SIZE_DIR, BG_DIR]:
         os.makedirs(d, exist_ok=True)
 
     annotations = []
@@ -260,6 +326,33 @@ def main():
             "filename": f"fail_overexposed/{out_name}",
             "label": "FAIL",
             "reason": "FAIL_OVEREXPOSED",
+            "source_file": fname
+        })
+
+        # --- FAIL_FACE_COUNT ---
+        imwrite_unicode(os.path.join(FACE_COUNT_DIR, out_name), make_fail_face_count(img))
+        annotations.append({
+            "filename": f"fail_face_count/{out_name}",
+            "label": "FAIL",
+            "reason": "FAIL_FACE_COUNT",
+            "source_file": fname
+        })
+
+        # --- FAIL_FACE_SIZE ---
+        imwrite_unicode(os.path.join(FACE_SIZE_DIR, out_name), make_fail_face_size(img))
+        annotations.append({
+            "filename": f"fail_face_size/{out_name}",
+            "label": "FAIL",
+            "reason": "FAIL_FACE_SIZE",
+            "source_file": fname
+        })
+
+        # --- FAIL_BACKGROUND ---
+        imwrite_unicode(os.path.join(BG_DIR, out_name), make_fail_background(img))
+        annotations.append({
+            "filename": f"fail_background/{out_name}",
+            "label": "FAIL",
+            "reason": "FAIL_BACKGROUND",
             "source_file": fname
         })
 

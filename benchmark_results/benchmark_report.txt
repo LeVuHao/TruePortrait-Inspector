@@ -7,9 +7,9 @@
                                  | Pred PASS | Pred FAIL
   ------------------------------------------------------------
   Ground Truth: PASS             |  TP=   45  |  FN=    5
-  Ground Truth: FAIL             |  FP=    0  |  TN=  150
+  Ground Truth: FAIL             |  FP=    0  |  TN=  300
 
-  Accuracy  : 97.50%  (195/200 du doan dung)
+  Accuracy  : 98.57%  (345/350 du doan dung)
   Precision : 100.00%  (trong so luong PASS he thong du doan, bao nhieu thuc su la PASS)
   Recall    : 90.00%  (trong so luong PASS thuc su, he thong bat duoc bao nhieu)
   F1-Score  : 94.74%
@@ -17,8 +17,11 @@
   Chi tiet theo tung loai loi:
   Loai loi                  | Tong   | Dung   | Sai    | Acc %   
   ------------------------------------------------------------
+  FAIL_BACKGROUND           | 50     | 50     | 0      | 100.0%
   FAIL_BLUR                 | 50     | 50     | 0      | 100.0%
   FAIL_DARK                 | 50     | 50     | 0      | 100.0%
+  FAIL_FACE_COUNT           | 50     | 50     | 0      | 100.0%
+  FAIL_FACE_SIZE            | 50     | 50     | 0      | 100.0%
   FAIL_OVEREXPOSED          | 50     | 50     | 0      | 100.0%
 
 =================================================================
