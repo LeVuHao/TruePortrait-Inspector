@@ -101,7 +101,7 @@ def run_full_pipeline(img_path: str) -> str:
 
     image_bgr, image_gray, preproc_metrics = preprocess_image(file_bytes, preset_config)
     face_metrics                           = analyze_face(image_bgr, image_gray, preset_config)
-    quality_metrics, _                     = analyze_quality(image_bgr, image_gray, preset_config)
+    quality_metrics, *_                    = analyze_quality(image_bgr, image_gray, preset_config)
     bg_metrics, _                          = analyze_background(image_bgr, image_gray, preset_config)
     eval_result                            = evaluate_photo(preproc_metrics, face_metrics, quality_metrics, bg_metrics)
 

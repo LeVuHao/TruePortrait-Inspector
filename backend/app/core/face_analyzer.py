@@ -15,9 +15,12 @@ import os
 from typing import Dict, Any, List
 
 
-# Khởi tạo mô hình Haar Cascade từ OpenCV chuẩn
-HAAR_CASCADE_PATH = os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
-face_cascade = cv2.CascadeClassifier(HAAR_CASCADE_PATH)
+# Khởi tạo mô hình Haar Cascade từ OpenCV chuẩn (alt2 tối ưu cho ảnh thẻ chân dung, default làm fallback)
+HAAR_CASCADE_ALT2_PATH = os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_alt2.xml")
+HAAR_CASCADE_DEFAULT_PATH = os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
+
+face_cascade_alt2 = cv2.CascadeClassifier(HAAR_CASCADE_ALT2_PATH)
+face_cascade_default = cv2.CascadeClassifier(HAAR_CASCADE_DEFAULT_PATH)
 
 
 def analyze_face(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config: dict) -> Dict[str, Any]:
@@ -33,15 +36,22 @@ def analyze_face(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config: d
         dict kết quả nhận diện khuôn mặt
     """
     img_h, img_w = image_gray.shape[:2]
+    min_size = (int(img_w * 0.15), int(img_h * 0.15))
     
-    # 1. Phát hiện khuôn mặt bằng Haar Cascade
-    # scaleFactor=1.1, minNeighbors=5, minSize=(int(img_w * 0.15), int(img_h * 0.15))
-    faces = face_cascade.detectMultiScale(
+    # 1. Phát hiện khuôn mặt bằng Haar Cascade (Thử alt2 trước, fallback sang default)
+    faces = face_cascade_alt2.detectMultiScale(
         image_gray,
         scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(int(img_w * 0.15), int(img_h * 0.15))
+        minNeighbors=3,
+        minSize=min_size
     )
+    if len(faces) == 0:
+        faces = face_cascade_default.detectMultiScale(
+            image_gray,
+            scaleFactor=1.1,
+            minNeighbors=3,
+            minSize=min_size
+        )
     
     face_count = len(faces)
     

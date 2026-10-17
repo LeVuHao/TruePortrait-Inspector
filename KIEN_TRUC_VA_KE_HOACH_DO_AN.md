@@ -1,44 +1,47 @@
 # TÀI LIỆU KIẾN TRÚC HỆ THỐNG VÀ KẾ HOẠCH DỰ ÁN
 ## ĐỒ ÁN MÔN HỌC: XỬ LÝ ẢNH (DIGITAL IMAGE PROCESSING)
-### ĐỀ TÀI: HỆ THỐNG KIỂM TRA VÀ ĐÁNH GIÁ CHẤT LƯỢNG ẢNH THẺ TỰ ĐỘNG (ID PHOTO QUALITY CHECKER)
+### CHUYÊN ĐỀ: TRÍCH XUẤT ĐẶC TRƯNG TOÀN CỤC (GLOBAL FEATURES)
+### ĐỀ TÀI: HỆ THỐNG ĐÁNH GIÁ CHẤT LƯỢNG QUANG HỌC VÀ PHÂN LOẠI ẢNH THẺ TỰ ĐỘNG (PHOTOCHECK)
 
 ---
 
-## 1. ĐỊNH HƯỚNG BÁM SÁT MÔN HỌC & NGUYÊN TẮC HỌC THUẬT
+## 1. ĐỊNH HƯỚNG BÁM SÁT MÔN HỌC & CHỐT HẠ ĐẶC TRƯNG LÕI
 
-### 1.1. Bản chất công nghệ (Không thổi phồng "AI / Deep Learning")
-* **Tên hệ thống:** **PhotoCheck** hoặc **ID Photo Quality Checker** (Hệ thống kiểm tra chất lượng ảnh thẻ dựa trên Xử lý ảnh số & Thị giác máy tính - Computer Vision & Digital Image Processing).
-* **Phương pháp luận:** **Thuần toán học & thống kê ma trận ảnh (Explainable DIP)** kết hợp rule-based:
-  * Không dùng Deep Learning black-box phức tạp cần train model.
-  * Mọi tiêu chí đều giải thích tường minh được công thức toán học, ma trận điểm ảnh và không gian màu trước hội đồng bảo vệ.
+### 1.1. Lựa chọn nhóm đặc trưng duy nhất: ĐẶC TRƯNG TOÀN CỤC (GLOBAL FEATURES)
+* **Quyết định học thuật:** Thực hiện đúng chỉ đạo của Giảng viên hướng dẫn (*"chỉ chọn 1 đặc trưng dựa trên tính chất đề tài rồi phát triển sâu"*), nhóm chốt hạ chọn duy nhất: **ĐẶC TRƯNG TOÀN CỤC (GLOBAL FEATURES - Chương 6 Giáo trình DIP)**.
+* **Tính chất đề tài:** Kiểm định chất lượng quang học và điều kiện chiếu sáng (Photometric & Optical Image Quality Assessment - IQA):
+  * Nhận diện ảnh thiếu sáng (Underexposure), cháy sáng (Overexposure), ảnh ngược sáng, bạc màu, độ tương phản yếu.
+  * Phân tích phân bố phổ màu sắc toàn ảnh (Color Distribution) và cân bằng trắng.
+* **Bản chất toán học của Đặc trưng Toàn cục được nhóm triển khai sâu:**
+  1. **Bộ 4 mô-men thống kê mức xám (Statistical Moments):**
+     * Mô-men bậc 1: Cường độ sáng trung bình (**Mean** $\mu$).
+     * Mô-men bậc 2: Phương sai / Độ lệch chuẩn (**Variance / Std Dev** $\sigma$) đo độ tương phản.
+     * Mô-men bậc 3: Độ lệch phân bố (**Skewness** $S$) đo độ dồn về tối hay dồn về sáng.
+     * Mô-men bậc 4: Độ nhọn phân bố (**Kurtosis** $K$) đo độ tập trung của phổ sáng.
+  2. **Biểu đồ Histogram đa kênh & Chuẩn hóa L1 (Grayscale & HSV):**
+     * Gom 256 mức sáng thành 16 / 32 bins, chuẩn hóa $\sum p_i = 1.0$ thành vector xác suất.
+     * Trích xuất phân bố màu trên không gian HSV (Hue - Saturation - Value) bắt lỗi bạc màu da hoặc ám màu phông nền.
+  3. **Độ đo khoảng cách so sánh Vector đặc trưng giữa 2 ảnh:**
+     * So sánh ảnh người dùng với ảnh thẻ tham chiếu chuẩn (**Ideal Reference ID Photo**) qua độ đo **Bhattacharyya Distance** $d_B$, **Chi-Square** $\chi^2$, và **Histogram Intersection**.
+  4. **Thuật toán tự động hiệu chỉnh (Histogram Equalization & CLAHE):**
+     * Khi ảnh bị tối hoặc tương phản kém, áp dụng thuật toán cân bằng lược đồ xám toàn cục để tự động nâng cao chất lượng ảnh.
 
-### 1.2. Chuẩn hóa quy ước kỹ thuật: Preset STANDARD_ID_PHOTO
-Nhóm thống nhất một đặc tả kỹ thuật nội bộ cụ thể cho chuẩn ảnh thẻ sinh viên / hồ sơ học tập trong phạm vi đồ án:
-* **Định dạng file:** JPG, JPEG, PNG.
-* **Tỷ lệ khung hình (Aspect Ratio):** Chuẩn 3:4 (sai số cho phép trong khoảng +- 5%).
-* **Độ phân giải tối thiểu (Minimum Resolution):** Quy ước tối thiểu `600 x 800 px` (đảm bảo đủ mật độ điểm ảnh để phân tích nét mặt).
-* **Số lượng khuôn mặt (Face Count):** Duy nhất 1 khuôn mặt.
-* **Tỷ lệ chiều cao khuôn mặt (Face Height Ratio):**
-  * `Face Height Ratio = (Face Bounding Box Height) / (Total Image Height)`
-  * *(Khoảng ngưỡng [ratio_min, ratio_max] được xác định chính xác thông qua thực nghiệm trên tập dữ liệu kiểm thử).*
-* **Độ sáng & Độ tương phản:** Cường độ trung bình (Mean Intensity) và Độ lệch chuẩn (Std Dev) *(Ngưỡng xác định bằng thực nghiệm)*.
-* **Độ rõ nét (Sharpness):** Phương sai toán tử Laplacian `Var(Laplacian)` *(Ngưỡng xác định bằng thực nghiệm)*.
-* **Độ đồng nhất nền (Background Uniformity):** Độ lệch chuẩn màu (Std Dev) tại các vùng ROI đại diện (4 góc ảnh / vùng biên) *(Ngưỡng xác định bằng thực nghiệm)*.
+### 1.2. Vai trò của Giao diện Web (Web Demo Interactive Lab)
+* **Web Demo là bắt buộc:** Giao diện Web (React + FastAPI) đóng vai trò là **Phòng Thí Nghiệm Trực Quan Hóa Đặc Trưng Toàn Cục**:
+  * Người dùng kéo thả ảnh thẻ $\rightarrow$ Web bóc tách và vẽ trực tiếp biểu đồ ngọn núi Histogram 16 bins.
+  * Hiển thị bảng 4 mô-men thống kê ($\mu, \sigma, S, K$) và chỉ số khoảng cách Bhattacharyya $d_B$.
+  * Cung cấp nút gạt trực tiếp: **"Tự động cân bằng sáng bằng Histogram Equalization (CLAHE)"** để người dùng và Hội đồng thấy rõ hiệu quả thuật toán xử lý ảnh trước/sau (Before / After).
+* **Các module phụ trợ (Kích thước 3:4, Khung mặt Haar, Viền Laplacian):** Được xếp vào nhóm *"Tiền xử lý sơ bộ & Hỗ trợ bố cục (Preprocessing & Layout Aids)"*, giữ nguyên trên Web để demo hoàn chỉnh nhưng khẳng định trước Hội đồng: **Trọng tâm nghiên cứu học thuật của đồ án là Đặc trưng Toàn cục**.
 
 ---
 
 ## 2. NGUYÊN TẮC VÀNG KHI TRIỂN KHAI VÀ BẢO VỆ ĐỒ ÁN 
 
-> **1. Đừng biến Threshold thành "Chân lý" (Data-driven Threshold Tuning)**  
-> Mọi con số khởi tạo ban đầu (Laplacian > 80, Brightness 100-200, Face Ratio 0.45-0.65, Background Std < 15) chỉ là **giá trị giả định thô**.  
-> Quy trình học thuật chuẩn của nhóm phải tuân thủ nghiêm ngặt:  
-> `Dataset Test -> Tính Metric từng ảnh -> Vẽ phân bố (Distribution) -> Thử nghiệm dải Threshold -> Benchmark Ground Truth -> Chốt Threshold tối ưu`  
-> **Giá trị bảo vệ:** Khi giảng viên hỏi *"Tại sao chọn ngưỡng 80?"*, nhóm tự tin trả lời: *"Đây là ngưỡng được xác định qua thực nghiệm phân loại trên tập Dataset có gán nhãn Ground Truth, đạt F1-Score cao nhất giữa False Positive và False Negative."*
+> **1. Trả lời thuyết phục câu hỏi của Thầy: "Tại sao đề tài thuộc Đặc trưng Toàn cục?"**  
+> *"Thưa thầy, bài toán kiểm định ảnh thẻ chuẩn ICAO/ISO có tiêu chí cốt lõi nhất là điều kiện chiếu sáng và tương phản quang học. Đặc trưng toàn cục quan sát ma trận toàn ảnh, lượng hóa toàn bộ ánh sáng thành vector phân bố xác suất mà không phụ thuộc vào vị trí tọa độ điểm ảnh. Nhóm đã xây dựng bộ vector 18 chiều gồm 4 mô-men thống kê và 16 bins Histogram, đo khoảng cách Bhattacharyya với ảnh chuẩn để đưa ra kết luận phân loại đạt độ chính xác cao."*
 
-> **2. Cân đối thời gian: Thuật toán & Thực nghiệm là số 1 (Algorithms > Over-design)**  
-> Giao diện Web đẹp chuẩn Enterprise là **vũ khí gây ấn tượng mạnh trong 5 phút demo**, nhưng **xương sống ăn điểm đồ án là Thuật toán + Bảng số liệu thực nghiệm**.  
-> * **Lựa chọn đúng:** Web sạch sẽ, trực quan hóa được các bước DIP (Original, Grayscale, Laplacian, ROIs) + Pipeline thực nghiệm có chỉ số khoa học.  
-> * Tránh sa đà làm quá nhiều hiệu ứng CSS phức tạp mà lơ là việc tối ưu thuật toán và gán nhãn dataset.
+> **2. Thực nghiệm khoa học trên 350 ảnh Ground Truth:**  
+> Đánh giá hiệu năng phân loại của Đặc trưng Toàn cục trên 350 ảnh (50 ảnh chuẩn, 100 ảnh tối, 100 ảnh cháy sáng, 100 ảnh bạc màu), xuất ma trận nhầm lẫn (Confusion Matrix) và F1-score tối ưu.
 
 ---
 
@@ -46,22 +49,18 @@ Nhóm thống nhất một đặc tả kỹ thuật nội bộ cụ thể cho ch
 
 ```
 +------------------------------------------------------------------------+
-| [MUST HAVE] Hoan thanh trong MVP - Cot loi do an                       |
-|  - Upload anh (JPG, PNG) & Kiem tra kich thuoc toi thieu, ty le 3:4    |
-|  - Tien xu ly (Grayscale, Normalization)                               |
-|  - Face Detection: Dem so mat (Face Count = 1)                         |
-|  - Face Geometry: Face Height Ratio (H_face / H_img)                   |
-|  - Image Quality: Do mo (Laplacian Variance), Do sang (Mean Intensity) |
-|  - Background: Phan tich do dong nhat vung ROI 4 goc (Uniformity)      |
-|  - Rule Engine: Tinh diem Quality Score (0 - 100) & Ket luan PASS/FAIL |
-|  - Web UI: Tai anh, hien thi Bounding Box & Bang ket qua tung tieu chi |
+| [MUST HAVE] Core DIP: Đặc Trưng Toàn Cục & Demo Web                    |
+|  - Trích xuất 4 mô-men toàn cục: Mean, Std Dev, Skewness, Kurtosis     |
+|  - Trích xuất Grayscale Histogram (16 bins) chuẩn hóa L1               |
+|  - So sánh khoảng cách Bhattacharyya với Profile ảnh chuẩn tham chiếu  |
+|  - Phân loại chất lượng sáng: ĐẠT / THIẾU SÁNG / CHÁY SÁNG / BẠC MÀU   |
+|  - Web UI: Kéo thả ảnh, vẽ biểu đồ Histogram & thẻ kết luận PASS/FAIL  |
 +------------------------------------------------------------------------+
-| [SHOULD HAVE] Giai doan 2 - Nang cao tinh hoc thuat & Truc quan        |
-|  - Step-by-Step Visualizer (Xem anh Grayscale, ma tran vien, ROIs nen) |
-|  - Bieu do phan bo cuong do sang (Brightness Histogram)                |
-|  - File cau hinh nguong tap trung (config.json / settings.py)          |
-|  - Dataset kiem thu (100-200 anh) co gan Ground Truth chi tiet         |
-|  - Bao cao thong ke: Accuracy, Precision, Recall, F1, Confusion Matrix |
+| [SHOULD HAVE] Thuật toán nâng cao & Trực quan hóa tương tác            |
+|  - Nút bấm tự động cân bằng sáng (Histogram Equalization / CLAHE)      |
+|  - Hiển thị ảnh Trước/Sau (Before vs After Equalization) trên Web      |
+|  - Báo cáo Benchmark 350 ảnh Ground Truth (Accuracy, F1, Confusion)    |
+|  - Giữ lại các bộ lọc hỗ trợ: Bounding Box mặt (Haar), Sharpness (Lap) |
 +------------------------------------------------------------------------+
 | [NICE TO HAVE] Giai doan 3 - Chi lam neu con du thoi gian              |
 |  - Tuy chon Preset chi tiet (Anh 3x4 vs 4x6)                           |
@@ -260,14 +259,14 @@ Mỗi thành viên phát triển module độc lập, nhận vào `image: np.nda
 
 ---
 
-### BẢNG PHÂN CÔNG VAI TRÒ & SẢN PHẨM BÀN GIAO
+### BẢNG PHÂN CÔNG VAI TRÒ & SẢN PHẨM BÀN GIAO (CHUYÊN SÂU ĐẶC TRƯNG TOÀN CỤC)
 
-| Thành viên | Trọng tâm Xử lý ảnh (Core DIP) | Trách nhiệm tích hợp & Hỗ trợ | Sản phẩm bàn giao cụ thể |
+| Thành viên | Trọng tâm Nghiên cứu Đặc trưng Toàn cục (Core DIP) | Trách nhiệm Web & Tích hợp | Sản phẩm bàn giao cụ thể |
 | :--- | :--- | :--- | :--- |
-| **HẢO** *(Team Leader)* | **Module 1: Preprocessing & Resolution Analysis + Evaluation & Scoring Engine**<br>- Chuẩn hóa ảnh, kích thước, aspect ratio, ma trận Grayscale.<br>- Xây dựng công thức tính điểm (Quality Score 0-100) & Rule-based decision logic. | **Kiến trúc Web Dashboard & Pipeline Tổng**<br>- Thiết kế Web Dashboard (React) chuyên nghiệp.<br>- Xây dựng FastAPI Service chính kết nối toàn bộ pipeline.<br>- Trực quan hóa Step-by-Step Canvas trên Web. | - File `preprocessor.py`<br>- File `evaluator.py`<br>- Mã nguồn Frontend Web (React) & `main.py` FastAPI. |
-| **QUÂN** | **Module 2: Face Detection & Face Height Ratio**<br>- Phát hiện khuôn mặt (Haar Cascade / OpenCV DNN).<br>- Thuật toán đếm số khuôn mặt (duy nhất 1).<br>- Tính toán **Face Height Ratio** (`H_face / H_img`) và độ cân đối vị trí tâm mặt. | **Hỗ trợ Integration Face API**<br>- Viết API wrapper cho module Face Detection để Hảo ghép nối nhanh vào FastAPI.<br>- Thử nghiệm chọn lọc mô hình và tối ưu tốc độ nhận diện. | - File `face_analyzer.py`<br>- Script test độc lập cho face detection & bounding box. |
-| **CHƯƠNG** | **Module 3: Image Quality (Blur & Brightness/Contrast)**<br>- Thuật toán phát hiện ảnh mờ (Variance of Laplacian).<br>- Phân tích phân bố Histogram cường độ sáng (Mean Intensity, Over/Under-exposure, Contrast Std Dev). | **Hỗ trợ Threshold Management**<br>- Xây dựng module quản lý ngưỡng tập trung (`config.py` / `thresholds.json`).<br>- Thử nghiệm tìm dải ngưỡng mờ và ngưỡng sáng tối ưu. | - File `quality_analyzer.py`<br>- File `config.py` quản lý dải ngưỡng thử nghiệm. |
-| **HUY** | **Module 4: Background Uniformity Analysis**<br>- Thuật toán trích xuất các vùng ROI nền đại diện (4 góc ảnh / vùng biên ngoài khuôn mặt).<br>- Tính toán độ lệch chuẩn màu/cường độ (`Std Dev`) đánh giá độ đồng nhất nền. | **Dataset Ground Truth & Benchmarking**<br>- Xây dựng tập Dataset kiểm thử (100-200 ảnh) có gán Ground Truth chi tiết.<br>- Viết script benchmark tự động tính toán Accuracy, Precision, Recall, F1, Confusion Matrix. | - File `background_analyzer.py`<br>- Bộ Dataset kiểm thử kèm file `benchmark_eval.py` xuất bảng số liệu. |
+| **HẢO** *(Team Leader)* | **Module 1: Trích xuất Histogram Đa Kênh & Chuẩn hóa L1**<br>- Trích xuất Grayscale Histogram (16 & 32 bins) và HSV Color Histogram (Hue, Saturation, Value).<br>- Chuẩn hóa vector xác suất ($\sum p_i = 1.0$) cho mọi kích thước ảnh.<br>- Động cơ tính điểm chất lượng quang học tổng thể (Quality Score 0-100). | **Kiến trúc Web Dashboard (Interactive Lab)**<br>- Thiết kế Web React: Kéo thả ảnh, vẽ biểu đồ Histogram tương tác.<br>- Xây dựng FastAPI Service chính kết nối toàn bộ pipeline.<br>- Trực quan hóa vector đặc trưng và so sánh trước/sau. | - File `preprocessor.py`<br>- File `evaluator.py`<br>- Mã nguồn Frontend Web (React) & `main.py` FastAPI. |
+| **CHƯƠNG** | **Module 2: Bộ 4 Mô-men Thống kê Toàn ảnh (Statistical Moments)**<br>- Thuật toán tính Mean ($\mu$), Variance/Std Dev ($\sigma$), Skewness ($S$ - độ lệch dồn sáng/tối), Kurtosis ($K$ - độ nhọn phổ).<br>- Phân loại tự động 4 trạng thái quang học: Chuẩn sáng, Thiếu sáng (Dark), Cháy sáng (Overexposed), Bạc màu (Low Contrast). | **Threshold Tuning & Rule Engine**<br>- Xây dựng module quản lý ngưỡng tập trung (`config.py` / `thresholds.json`).<br>- Thử nghiệm tìm dải ngưỡng tối ưu cho 4 mô-men thống kê. | - File `quality_analyzer.py`<br>- File `config.py` quản lý dải ngưỡng thực nghiệm. |
+| **QUÂN** | **Module 3: Đo Khoảng cách So sánh & Cân bằng sáng tự động (CLAHE)**<br>- Thuật toán đo khoảng cách phân bố: **Bhattacharyya Distance** ($d_B$), Chi-Square ($\chi^2$), Histogram Intersection giữa ảnh người dùng và ảnh mẫu chuẩn.<br>- Thuật toán tự động hiệu chỉnh ảnh thẻ bị tối/cháy bằng **Histogram Equalization / CLAHE** (hiển thị Before/After trên Web). | **Hỗ trợ API Comparison & Enhancement**<br>- Viết API endpoint `/api/v1/enhance-clahe` phục vụ nút bấm tự động cân bằng sáng trên Web.<br>- Module phụ trợ: Kiểm tra bố cục sơ bộ (Haar bounding box). | - Module `histogram_matcher.py` (Bhattacharyya & CLAHE)<br>- Script test độc lập so sánh độ sai khác giữa các ảnh. |
+| **HUY** | **Module 4: Quản lý Dataset Ground Truth & Benchmarking**<br>- Thu thập và gán nhãn 350 ảnh kiểm thử theo điều kiện quang học: 50 ảnh chuẩn, 100 ảnh tối, 100 ảnh cháy sáng, 100 ảnh bạc màu.<br>- Viết script benchmark tự động tính toán: Accuracy, Precision, Recall, F1-Score, Ma trận nhầm lẫn (Confusion Matrix). | **Báo cáo Thống kê Khoa học**<br>- Trích xuất biểu đồ ma trận nhầm lẫn và ROC curve chứng minh hiệu quả của bộ đặc trưng toàn cục.<br>- Báo cáo phân tích các ca False Positive / False Negative. | - File `benchmark_eval.py`<br>- Bộ Dataset 350 ảnh kèm file nhãn JSON/CSV và ảnh biểu đồ. |
 
 ---
 
@@ -352,12 +351,12 @@ Mỗi thành viên phát triển module độc lập, nhận vào `image: np.nda
 ---
 
 ### GIAI ĐOẠN 5: VIẾT BÁO CÁO, SLIDE & TỔNG DUYỆT DEMO (NGÀY 53 - NGÀY 60)
-* **Ngày 53 - 56 (Phân chia viết báo cáo môn học):**
-  * **Hảo:** Viết Chương 1 (Giới thiệu bài toán, mục tiêu), Chương 2 (Kiến trúc hệ thống, Luồng xử lý Pipeline & Thiết kế Giao diện Web) và Động cơ tính điểm.
-  * **Quân:** Viết Chương 3.1: Cơ sở lý thuyết & Thuật toán Face Detection, Face Geometry & Face Height Ratio (kèm công thức toán và hình minh họa).
-  * **Chương:** Viết Chương 3.2: Cơ sở lý thuyết & Thuật toán Độ mờ (Laplacian Variance) và Phân tích Histogram độ sáng/độ tương phản.
-  * **Huy:** Viết Chương 3.3 (Phân tích độ đồng nhất nền qua ROI) và Chương 4 (Thực nghiệm & Đánh giá kết quả: Bảng số liệu Accuracy, Precision, Recall, Ma trận nhầm lẫn từ Ground Truth).
+* **Ngày 53 - 56 (Phân chia viết báo cáo đồ án bám sát giáo trình DIP):**
+  * **Hảo:** Viết Chương 1 (Bài toán & Chuẩn ảnh thẻ quốc tế/sinh viên), Chương 2 (Kiến trúc hệ thống, Pipeline & Trụ cột 1: Phân tích Đặc trưng Toàn cục - Global Features: Histogram & Statistical Moments) và Động cơ tính điểm.
+  * **Quân:** Viết Chương 3.1: Cơ sở lý thuyết & Thuật toán Trụ cột 2: Biến đổi Hough (Hough Line Transform) đo góc lệch vai và Đặc trưng cục bộ (Haar-like features) định vị khuôn mặt / hình học ảnh thẻ.
+  * **Chương:** Viết Chương 3.2: Cơ sở lý thuyết & Thuật toán Trụ cột 3: Đặc trưng Biên (Edge Features: Laplacian 2nd Derivative đo mờ, Sobel/Canny Gradient và độ trơn viền).
+  * **Huy:** Viết Chương 3.3: Trụ cột 4: Phân vùng ảnh (Segmentation) & Đặc trưng Vùng (Region Features: HSV Color Thresholding, Otsu, Morphology, GLCM Texture đồng nhất nền) và Chương 4 (Thực nghiệm 350 ảnh Ground Truth, Confusion Matrix & Phân tích sai số).
 * **Ngày 57 - 60 (Cả nhóm):**
-  * Thiết kế Slide báo cáo đồng bộ, chuyên nghiệp.
-  * Chuẩn bị sẵn kịch bản demo (Tập ảnh đại diện: 1 ảnh chuẩn ĐẠT, 1 ảnh mờ nét, 1 ảnh tối, 1 ảnh 2 người, 1 ảnh nền rối).
+  * Thiết kế Slide báo cáo đồng bộ, chuyên nghiệp: Tôn vinh 5 nhóm đặc trưng học thuật và bảng số liệu thực nghiệm.
+  * Chuẩn bị sẵn kịch bản demo (Tập ảnh đại diện: 1 ảnh chuẩn ĐẠT, 1 ảnh mờ nét, 1 ảnh tối, 1 ảnh 2 người, 1 ảnh lệch vai, 1 ảnh nền rối).
   * Tổng duyệt thuyết trình thử trước buổi chấm đồ án.

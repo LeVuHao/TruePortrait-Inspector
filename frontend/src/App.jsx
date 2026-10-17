@@ -83,6 +83,8 @@ export default function App() {
         return result.visual_assets.original || previewUrl;
       case 'face_bbox':
         return result.visual_assets.face_bbox || previewUrl;
+      case 'clahe_enhanced':
+        return result.visual_assets.clahe_enhanced || previewUrl;
       case 'grayscale':
         return result.visual_assets.grayscale || previewUrl;
       case 'laplacian_map':
@@ -104,13 +106,13 @@ export default function App() {
           </div>
           <div>
             <h1 className="brand-title">PhotoCheck Pro</h1>
-            <p className="brand-subtitle">Hệ thống kiểm tra chất lượng ảnh thẻ tự động (DIP Core)</p>
+            <p className="brand-subtitle">Chuyên đề: Trích xuất Đặc trưng Toàn cục (Global Features & IQA)</p>
           </div>
         </div>
         <div className="header-controls">
           <div className="preset-badge">
             <Square size={14} />
-            <span>Chuẩn: STANDARD_ID_PHOTO (3:4, Min 600x800)</span>
+            <span>Preset: STANDARD_ID_PHOTO (3:4, Min 600x800)</span>
           </div>
         </div>
       </header>
@@ -167,7 +169,14 @@ export default function App() {
                     className={`tab-btn ${activeTab === 'face_bbox' ? 'active' : ''}`}
                     onClick={() => setActiveTab('face_bbox')}
                   >
-                    <User size={14} /> Phát hiện mặt
+                    <User size={14} /> Khung mặt
+                  </button>
+                  <button 
+                    className={`tab-btn ${activeTab === 'clahe_enhanced' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('clahe_enhanced')}
+                    style={{ borderColor: activeTab === 'clahe_enhanced' ? '#f59e0b' : 'rgba(245,158,11,0.3)', color: activeTab === 'clahe_enhanced' ? '#fff' : '#fbbf24' }}
+                  >
+                    <Sparkles size={14} /> Cân bằng CLAHE
                   </button>
                   <button 
                     className={`tab-btn ${activeTab === 'grayscale' ? 'active' : ''}`}
@@ -179,13 +188,13 @@ export default function App() {
                     className={`tab-btn ${activeTab === 'laplacian_map' ? 'active' : ''}`}
                     onClick={() => setActiveTab('laplacian_map')}
                   >
-                    <Zap size={14} /> Cạnh viền Laplacian
+                    <Zap size={14} /> Viền Laplacian
                   </button>
                   <button 
                     className={`tab-btn ${activeTab === 'background_rois' ? 'active' : ''}`}
                     onClick={() => setActiveTab('background_rois')}
                   >
-                    <Maximize2 size={14} /> 4 Góc ROI Nền
+                    <Maximize2 size={14} /> 4 Góc ROI
                   </button>
                 </div>
 
@@ -193,8 +202,8 @@ export default function App() {
                 <div className="canvas-viewport">
                   {loading ? (
                     <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
-                      <div className="score-number" style={{ fontSize: '1.2rem', color: '#60a5fa' }}>Đang chạy Image Processing Pipeline...</div>
-                      <p style={{ fontSize: '0.8rem', marginTop: '6px', color: 'var(--text-muted)' }}>Tính toán Laplacian, Histogram & 4 góc nền ROI</p>
+                      <div className="score-number" style={{ fontSize: '1.2rem', color: '#60a5fa' }}>Đang trích xuất Đặc trưng Toàn cục...</div>
+                      <p style={{ fontSize: '0.8rem', marginTop: '6px', color: 'var(--text-muted)' }}>Tính 4 Mô-men thống kê, Histogram 16 bins & Khoảng cách Bhattacharyya</p>
                     </div>
                   ) : (
                     <img 
@@ -205,8 +214,22 @@ export default function App() {
                   )}
                 </div>
 
+                {/* Chú thích CLAHE khi đang xem tab CLAHE */}
+                {activeTab === 'clahe_enhanced' && (
+                  <div className="clahe-banner">
+                    <span>✨ Ảnh đã được tự động cân bằng sáng bằng thuật toán CLAHE trên không gian màu CIELAB.</span>
+                    <button 
+                      className="tab-btn" 
+                      style={{ padding: '4px 8px', fontSize: '0.75rem', background: '#f59e0b', color: '#000' }}
+                      onClick={() => setActiveTab('original')}
+                    >
+                      So với ảnh gốc
+                    </button>
+                  </div>
+                )}
+
                 {/* Re-upload button */}
-                <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <button 
                     className="tab-btn" 
                     style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)' }}
@@ -225,31 +248,82 @@ export default function App() {
                   )}
                 </div>
 
-                {/* Histogram Visualizer nếu có dữ liệu */}
-                {result?.visual_assets?.histogram_data && (
-                  <div style={{ marginTop: '1.2rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                      <BarChart2 size={15} /> Biểu đồ phân bố cường độ sáng (Brightness Histogram - 16 bins):
+                {/* PHÒNG THÍ NGHIỆM ĐẶC TRƯNG TOÀN CỤC (GLOBAL FEATURES LAB) */}
+                {result?.checks?.brightness && (
+                  <div className="global-lab-card">
+                    <div className="global-lab-header">
+                      <div className="global-lab-title">
+                        <BarChart2 size={16} /> Chuyên đề: Trích xuất Đặc trưng Toàn cục (Global Features Lab)
+                      </div>
+                      <span className="crit-val-badge" style={{ color: '#60a5fa', borderColor: 'rgba(96,165,250,0.3)' }}>
+                        Vector 18-D (Ch.6 DIP)
+                      </span>
                     </div>
-                    <div className="histogram-container">
-                      {result.visual_assets.histogram_data.map((val, idx) => {
-                        const maxVal = Math.max(...result.visual_assets.histogram_data, 1);
-                        const heightPct = Math.max(8, (val / maxVal) * 100);
-                        return (
-                          <div 
-                            key={idx} 
-                            className="hist-bar" 
-                            style={{ height: `${heightPct}%` }}
-                            title={`Bin ${idx}: ${val} pixels`}
-                          />
-                        );
-                      })}
+
+                    {/* 4 Cards Mô-men thống kê */}
+                    <div className="global-metrics-grid">
+                      <div className="global-metric-box">
+                        <div className="global-metric-label">Mean (μ - Sáng)</div>
+                        <div className="global-metric-val">{result.checks.brightness.mean_intensity}</div>
+                      </div>
+                      <div className="global-metric-box">
+                        <div className="global-metric-label">Std Dev (σ - Tương phản)</div>
+                        <div className="global-metric-val">{result.checks.brightness.contrast_std}</div>
+                      </div>
+                      <div className="global-metric-box">
+                        <div className="global-metric-label">Skewness (S - Lệch)</div>
+                        <div className="global-metric-val" style={{ color: result.checks.brightness.skewness < 0 ? '#60a5fa' : '#f87171' }}>
+                          {result.checks.brightness.skewness > 0 ? `+${result.checks.brightness.skewness}` : result.checks.brightness.skewness}
+                        </div>
+                      </div>
+                      <div className="global-metric-box" style={{ borderColor: result.checks.brightness.bhattacharyya_distance < 0.45 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)' }}>
+                        <div className="global-metric-label">Bhattacharyya (dB)</div>
+                        <div className="global-metric-val" style={{ color: result.checks.brightness.bhattacharyya_distance < 0.45 ? 'var(--success)' : 'var(--danger)' }}>
+                          {result.checks.brightness.bhattacharyya_distance}
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Biểu đồ kép so sánh 2 ngọn núi Histogram 16 bins */}
+                    {result.visual_assets?.histogram_normalized_16 && result.visual_assets?.reference_histogram_16 && (
+                      <div className="dual-hist-wrapper">
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
+                          <span>So sánh Histogram chuẩn hóa L1 với Profile ảnh thẻ chuẩn (16 bins):</span>
+                          <span style={{ color: result.checks.brightness.bhattacharyya_distance < 0.45 ? '#34d399' : '#f87171' }}>
+                            {result.checks.brightness.bhattacharyya_distance < 0.45 ? '✓ Phân bố rất khớp chuẩn' : '⚠ Phân bố sai lệch nhiều'}
+                          </span>
+                        </div>
+                        <div className="dual-hist-container">
+                          {result.visual_assets.histogram_normalized_16.map((val, idx) => {
+                            const refVal = result.visual_assets.reference_histogram_16[idx] || 0;
+                            const h1 = Math.min(100, Math.max(4, val * 160));
+                            const h2 = Math.min(100, Math.max(4, refVal * 160));
+                            return (
+                              <div key={idx} className="dual-hist-col" title={`Bin ${idx} | Hiện tại: ${(val*100).toFixed(1)}% | Chuẩn: ${(refVal*100).toFixed(1)}%`}>
+                                <div className="bar-current" style={{ height: `${h1}%` }} />
+                                <div className="bar-ref" style={{ height: `${h2}%` }} />
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="hist-legend">
+                          <div className="legend-item">
+                            <div className="legend-dot dot-current" />
+                            <span>Ảnh hiện tại (Histogram L1)</span>
+                          </div>
+                          <div className="legend-item">
+                            <div className="legend-dot dot-ref" />
+                            <span>Profile ảnh thẻ chuẩn (Mẫu tham chiếu 50 ảnh PASS)</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             )}
           </div>
+
 
           {/* CỘT PHẢI: KẾT QUẢ ĐÁNH GIÁ & 6 TIÊU CHÍ */}
           <div className="card-glass">
@@ -359,19 +433,21 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* 5. Độ sáng & Độ tương phản */}
-                  <div className="criterion-item">
+                  {/* 5. Đặc trưng Toàn cục (Global Photometric & Optical Quality) */}
+                  <div className="criterion-item" style={{ borderColor: result.checks.brightness.passed ? 'rgba(59,130,246,0.4)' : 'rgba(239,68,68,0.4)', background: 'rgba(59,130,246,0.06)' }}>
                     <div className="crit-left">
                       <div className={`crit-status-icon ${result.checks.brightness.passed ? 'pass' : 'fail'}`}>
                         {result.checks.brightness.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                       </div>
                       <div>
-                        <div className="crit-title">5. Độ sáng & Độ tương phản</div>
+                        <div className="crit-title" style={{ color: '#93c5fd' }}>
+                          ★ 5. Đặc trưng Toàn cục: Quang học & Ánh sáng (Global IQA)
+                        </div>
                         <div className="crit-desc">{result.checks.brightness.message}</div>
                       </div>
                     </div>
-                    <div className="crit-val-badge">
-                      Mean: {result.checks.brightness.mean_intensity} | Std: {result.checks.brightness.contrast_std}
+                    <div className="crit-val-badge" style={{ color: result.checks.brightness.passed ? '#34d399' : '#f87171' }}>
+                      {result.checks.brightness.optical_label || 'Đạt chuẩn'} (dB: {result.checks.brightness.bhattacharyya_distance})
                     </div>
                   </div>
 
@@ -393,9 +469,12 @@ export default function App() {
 
                 </div>
 
-                {/* Danh sách lỗi và lời khuyên */}
+                {/* Danh sách lỗi */}
                 {result.reasons && result.reasons.length > 0 && (
                   <div className="reasons-container">
+                    <div className="reasons-title">
+                      <AlertTriangle size={16} /> Các điểm chưa đạt:
+                    </div>
                     <ul className="reasons-list">
                       {result.reasons.map((r, i) => (
                         <li key={i}>{r}</li>
@@ -404,13 +483,13 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Danh sách lời khuyên */}
+                {/* Lời khuyên khắc phục */}
                 {result.recommendations && result.recommendations.length > 0 && (
-                  <div className="reasons-container" style={{ marginTop: '1rem', background: 'rgba(16, 185, 129, 0.05)', borderColor: 'rgba(16, 185, 129, 0.2)' }}>
-                    <div className="reasons-title" style={{ color: 'var(--success)' }}>
-                      <Lightbulb size={16} /> Lời khuyên khắc phục (Recommendations):
+                  <div className="recommendations-container">
+                    <div className="recommendations-title">
+                      <Lightbulb size={16} /> Lời khuyên khắc phục:
                     </div>
-                    <ul className="reasons-list" style={{ color: 'var(--text-secondary)' }}>
+                    <ul className="recommendations-list">
                       {result.recommendations.map((rec, i) => (
                         <li key={i}>{rec}</li>
                       ))}

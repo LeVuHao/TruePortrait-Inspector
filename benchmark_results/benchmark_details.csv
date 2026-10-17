@@ -1,5 +1,5 @@
 ﻿filename,gt_label,pred_label,reason,correct
-pass/id_001.jpg,PASS,FAIL,None,False
+pass/id_001.jpg,PASS,PASS,None,True
 fail_blur/id_001.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_001.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_001.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
@@ -47,7 +47,7 @@ pass/id_012.jpg,PASS,PASS,None,True
 fail_blur/id_012.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_012.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_012.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
-pass/id_013.jpg,PASS,FAIL,None,False
+pass/id_013.jpg,PASS,PASS,None,True
 fail_blur/id_013.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_013.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_013.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
@@ -131,7 +131,7 @@ pass/id_033.jpg,PASS,PASS,None,True
 fail_blur/id_033.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_033.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_033.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
-pass/id_034.jpg,PASS,FAIL,None,False
+pass/id_034.jpg,PASS,PASS,None,True
 fail_blur/id_034.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_034.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_034.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
@@ -159,7 +159,7 @@ pass/id_040.jpg,PASS,PASS,None,True
 fail_blur/id_040.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_040.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_040.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
-pass/id_041.jpg,PASS,FAIL,None,False
+pass/id_041.jpg,PASS,PASS,None,True
 fail_blur/id_041.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_041.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_041.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
