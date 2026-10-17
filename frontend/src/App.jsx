@@ -15,8 +15,12 @@ import {
   BarChart2, 
   RotateCcw,
   Sparkles,
-  Lightbulb
+  Lightbulb,
+  Wand2,
+  Download
 } from 'lucide-react';
+
+
 
 export default function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -76,6 +80,17 @@ export default function App() {
     }
   };
 
+  const handleDownloadStandardized = () => {
+    if (!result?.visual_assets?.standardized) return;
+    const link = document.createElement('a');
+    link.href = result.visual_assets.standardized;
+    link.download = 'PhotoCheck_Anh_De_Xuat_3x4.jpg';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
   const getActiveImageSrc = () => {
     if (!result || !result.visual_assets) return previewUrl;
     switch (activeTab) {
@@ -85,6 +100,8 @@ export default function App() {
         return result.visual_assets.face_bbox || previewUrl;
       case 'clahe_enhanced':
         return result.visual_assets.clahe_enhanced || previewUrl;
+      case 'standardized':
+        return result.visual_assets.standardized || previewUrl;
       case 'grayscale':
         return result.visual_assets.grayscale || previewUrl;
       case 'laplacian_map':
@@ -95,6 +112,7 @@ export default function App() {
         return previewUrl;
     }
   };
+
 
   return (
     <div className="app-container">
@@ -179,6 +197,12 @@ export default function App() {
                     <Sparkles size={14} /> Cân bằng CLAHE
                   </button>
                   <button 
+                    className={`tab-btn tab-standardized ${activeTab === 'standardized' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('standardized')}
+                  >
+                    <Wand2 size={14} /> Chuẩn hóa DIP (3:4)
+                  </button>
+                  <button 
                     className={`tab-btn ${activeTab === 'grayscale' ? 'active' : ''}`}
                     onClick={() => setActiveTab('grayscale')}
                   >
@@ -214,6 +238,24 @@ export default function App() {
                   )}
                 </div>
 
+                {/* Chú thích Ảnh đề xuất khi đang xem tab standardized */}
+                {activeTab === 'standardized' && (
+                  <div className="standardized-banner">
+                    <div className="std-banner-info">
+                      <Wand2 size={16} />
+                      <span>
+                        Ảnh đề xuất hiệu chỉnh: Tỷ lệ 3:4 ({result?.standardization_report?.standardized_width}x{result?.standardization_report?.standardized_height} px) theo đúng lỗi thực tế của ảnh (không can thiệp thừa).
+                      </span>
+                    </div>
+                    <div className="std-banner-actions">
+                      <button className="btn-std-download" onClick={handleDownloadStandardized}>
+                        <Download size={13} /> Tải ảnh đề xuất (JPG)
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+
                 {/* Chú thích CLAHE khi đang xem tab CLAHE */}
                 {activeTab === 'clahe_enhanced' && (
                   <div className="clahe-banner">
@@ -227,6 +269,7 @@ export default function App() {
                     </button>
                   </div>
                 )}
+
 
                 {/* Re-upload button */}
                 <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -363,10 +406,88 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* KHỐI XUẤT ẢNH CHUẨN HÓA DIP (AUTO-STANDARDIZER ACTION CARD) */}
+                {result?.visual_assets?.standardized && (
+                  <div className="auto-standardize-card">
+                    <div className="std-card-header">
+                      <div className="std-header-left">
+                        <div className="std-badge-icon">
+                          <Wand2 size={18} />
+                        </div>
+                        <div>
+                          <div className="std-card-title">Ảnh Đề Xuất Hiệu Chỉnh (Targeted DIP Fix)</div>
+                          <div className="std-card-sub">Tự động sửa đúng lỗi: giảm chói, nâng sáng hoặc căn lại khung 3:4</div>
+                        </div>
+                      </div>
+                      <span className="std-pill">Adaptive Fix</span>
+                    </div>
+
+                    {/* 4 Chỉ số chuẩn hóa */}
+                    <div className="std-highlights-grid">
+                      <div className="std-hl-item">
+                        <div className="std-hl-label">Bố cục & Kích thước</div>
+                        <div className="std-hl-val">3:4 ({result.standardization_report?.standardized_width}x{result.standardization_report?.standardized_height} px)</div>
+                      </div>
+                      <div className="std-hl-item">
+                        <div className="std-hl-label">Tỷ lệ mặt (Face)</div>
+                        <div className="std-hl-val">~54% (Chuẩn ICAO)</div>
+                      </div>
+                      <div className="std-hl-item">
+                        <div className="std-hl-label">Cân bằng sáng</div>
+                        <div className="std-hl-val">Thích nghi theo lỗi</div>
+                      </div>
+                      <div className="std-hl-item">
+                        <div className="std-hl-label">Độ nét chi tiết</div>
+                        <div className="std-hl-val">Bảo toàn tự nhiên</div>
+                      </div>
+                    </div>
+
+                    {/* Nút hành động chính */}
+                    <div className="std-card-actions">
+                      <button 
+                        className="btn-std-primary" 
+                        onClick={handleDownloadStandardized}
+                        title="Tải ảnh đã hiệu chỉnh theo đúng tiêu chuẩn về máy tính"
+                      >
+                        <Download size={15} /> Tải ảnh đề xuất (JPG)
+                      </button>
+                      <button 
+                        className="btn-std-secondary" 
+                        onClick={() => setActiveTab('standardized')}
+                        title="Chuyển sang xem ảnh đề xuất trên Canvas"
+                      >
+                        <Wand2 size={15} /> Xem trên Canvas
+                      </button>
+                    </div>
+
+                    {/* Các phương pháp toán học DIP đã áp dụng */}
+                    {result?.standardization_report?.steps && (
+                      <div className="std-steps-box">
+                        <div className="std-steps-title">
+                          ★ Các bước xử lý thích nghi theo tình trạng ảnh (Giáo trình DIP):
+                        </div>
+
+                        <div className="std-steps-list">
+                          {result.standardization_report.steps.map((st, i) => (
+                            <div key={i} className="std-step-row">
+                              <div className="step-num">{st.step}</div>
+                              <div className="step-info">
+                                <div className="step-name">{st.name} <span className="step-method">[{st.method}]</span></div>
+                                <div className="step-desc">{st.description}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Danh sách 6 tiêu chí chi tiết */}
                 <h4 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', marginBottom: '10px' }}>
                   Chi tiết 6 tiêu chuẩn kiểm định (DIP Rules):
                 </h4>
+
                 <div className="criteria-list">
                   
                   {/* 1. Kích thước & Tỉ lệ */}
@@ -496,6 +617,8 @@ export default function App() {
                     </ul>
                   </div>
                 )}
+
+
               </div>
             )}
           </div>

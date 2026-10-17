@@ -143,6 +143,8 @@ def analyze_background(
     corner_stds_color: List[float] = []
     corner_combined:   List[float] = []
     corner_details:    List[Dict]  = []
+    corner_means_gray: List[float] = []
+    corner_laplacians: List[float] = []
 
     visual_img = image_bgr.copy()
 
@@ -162,15 +164,22 @@ def analyze_background(
         color_std = (b_std + g_std + r_std) / 3.0
 
         combined = 0.5 * gray_std + 0.5 * color_std
+        roi_mean = float(np.mean(roi_gray))
+        roi_lap = float(cv2.Laplacian(roi_gray, cv2.CV_64F).var())
 
         corner_stds_gray.append(gray_std)
         corner_stds_color.append(color_std)
         corner_combined.append(combined)
+        corner_means_gray.append(roi_mean)
+        corner_laplacians.append(roi_lap)
+
         corner_details.append({
             "name":       name,
             "gray_std":   round(gray_std, 2),
             "color_std":  round(color_std, 2),
             "combined":   round(combined, 2),
+            "mean_gray":  round(roi_mean, 1),
+            "laplacian":  round(roi_lap, 2),
         })
 
         # Vẽ khung ROI 4 góc
@@ -183,10 +192,27 @@ def analyze_background(
             cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 200, 255), 1, cv2.LINE_AA
         )
 
-    # 4. Chỉ số tổng hợp cuối cùng: trung bình 4 góc
+    # 4. Chỉ số tổng hợp cuối cùng: trung bình 4 góc & kiểm tra bất đối xứng ánh sáng
     avg_gray_std  = float(np.mean(corner_stds_gray))
     avg_color_std = float(np.mean(corner_stds_color))
     avg_bg_std    = float(np.mean(corner_combined))
+    avg_corner_luminance = float(np.mean(corner_means_gray))
+    avg_corner_laplacian = float(np.mean(corner_laplacians))
+
+    # corner_means_gray thứ tự: top_left (0), top_right (1), bottom_left (2), bottom_right (3)
+    tl_m, tr_m, bl_m, br_m = corner_means_gray[0], corner_means_gray[1], corner_means_gray[2], corner_means_gray[3]
+    left_m = (tl_m + bl_m) / 2.0
+    right_m = (tr_m + br_m) / 2.0
+    top_m = (tl_m + tr_m) / 2.0
+    bottom_m = (bl_m + br_m) / 2.0
+    
+    horizontal_diff = abs(left_m - right_m)
+    vertical_diff = top_m - bottom_m
+    
+    shadow_detected = (horizontal_diff > 18.0) or (vertical_diff > 25.0)
+    is_bokeh_blur = (avg_corner_laplacian < 12.0) and (bg_type == "CUSTOM_BACKGROUND" or avg_bg_std >= 2.0)
+    is_dark_murky = (avg_corner_luminance < 90.0) and (bg_type != "BLUE_BACKGROUND")
+    is_cluttered = (avg_bg_std > 4.5) and (avg_corner_laplacian >= 12.0)
 
     # 5. Đối chiếu ngưỡng
     bg_rules = preset_config.get("background_uniformity", {})
@@ -214,16 +240,24 @@ def analyze_background(
         )
 
     metrics: Dict[str, Any] = {
-        "passed":             bg_passed,
-        "avg_std_dev":        round(avg_bg_std, 2),
-        "avg_gray_std":       round(avg_gray_std, 2),
-        "avg_color_std":      round(avg_color_std, 2),
-        "segmented_bg_std":   round(bg_segmented_std, 2),
-        "bg_type":            bg_type,
-        "corners_std_dev":    [round(c, 2) for c in corner_combined],
-        "corner_details":     corner_details,
-        "threshold_max_std":  max_std,
-        "message":            message,
+        "passed":               bg_passed,
+        "avg_std_dev":          round(avg_bg_std, 2),
+        "avg_gray_std":         round(avg_gray_std, 2),
+        "avg_color_std":        round(avg_color_std, 2),
+        "segmented_bg_std":     round(bg_segmented_std, 2),
+        "avg_corner_luminance": round(avg_corner_luminance, 1),
+        "avg_corner_laplacian": round(avg_corner_laplacian, 2),
+        "horizontal_diff":      round(horizontal_diff, 1),
+        "vertical_diff":        round(vertical_diff, 1),
+        "shadow_detected":      bool(shadow_detected),
+        "is_bokeh_blur":        bool(is_bokeh_blur),
+        "is_dark_murky":        bool(is_dark_murky),
+        "is_cluttered":         bool(is_cluttered),
+        "bg_type":              bg_type,
+        "corners_std_dev":      [round(c, 2) for c in corner_combined],
+        "corner_details":       corner_details,
+        "threshold_max_std":    max_std,
+        "message":              message,
     }
 
     return metrics, visual_img

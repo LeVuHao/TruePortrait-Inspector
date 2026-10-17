@@ -22,6 +22,8 @@ from .core.face_analyzer import analyze_face
 from .core.quality_analyzer import analyze_quality
 from .core.background_analyzer import analyze_background
 from .core.evaluator import evaluate_photo
+from .core.auto_standardizer import standardize_id_photo
+
 
 
 def encode_image_to_base64(image_np: np.ndarray, is_gray: bool = False) -> str:
@@ -65,7 +67,12 @@ def run_pipeline(file_bytes: bytes, preset_name: str = DEFAULT_PRESET) -> Dict[s
     # 5. Module 5: Động cơ đánh giá tổng hợp & Tính điểm (Hảo)
     eval_result = evaluate_photo(preproc_metrics, face_metrics, quality_metrics, bg_metrics)
     
-    # 6. Tạo các ảnh trực quan hóa trung gian phục vụ Visual Step-by-Step Canvas trên React
+    # 6. Module Nâng cao: Tự động Chuẩn hóa & Phục hồi ảnh thẻ theo Giáo trình DIP (Toàn nhóm)
+    standardized_bgr, std_report = standardize_id_photo(
+        image_bgr, face_metrics.get("bounding_boxes", []), preset_config
+    )
+    
+    # 7. Tạo các ảnh trực quan hóa trung gian phục vụ Visual Step-by-Step Canvas trên React
     bbox_visual_img = image_bgr.copy()
     for bbox in face_metrics.get("bounding_boxes", []):
         bx, by, bw, bh = bbox["x"], bbox["y"], bbox["width"], bbox["height"]
@@ -80,6 +87,7 @@ def run_pipeline(file_bytes: bytes, preset_name: str = DEFAULT_PRESET) -> Dict[s
         "face_bbox": encode_image_to_base64(bbox_visual_img),
         "background_rois": encode_image_to_base64(bg_visual_img),
         "clahe_enhanced": encode_image_to_base64(clahe_enhanced_bgr),
+        "standardized": encode_image_to_base64(standardized_bgr),
         "histogram_data": quality_metrics["brightness"]["histogram_data"],
         "histogram_normalized_16": quality_metrics["brightness"]["histogram_normalized_16"],
         "reference_histogram_16": quality_metrics["brightness"]["reference_histogram_16"]
@@ -94,9 +102,13 @@ def run_pipeline(file_bytes: bytes, preset_name: str = DEFAULT_PRESET) -> Dict[s
         "reasons": eval_result["reasons"],
         "recommendations": eval_result["recommendations"],
         "bounding_boxes": face_metrics.get("bounding_boxes", []),
+
+
         "checks": eval_result["checks"],
         "global_feature_vector": quality_metrics.get("global_feature_vector", []),
         "clahe_enhancement": quality_metrics.get("clahe_enhancement", {}),
+        "standardization_report": std_report,
         "visual_assets": visual_assets
     }
+
 

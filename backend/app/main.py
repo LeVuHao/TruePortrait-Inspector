@@ -4,6 +4,8 @@ Phụ trách bởi: HẢO
 Cung cấp Endpoint:
 - GET  /api/v1/health       : Kiểm tra trạng thái máy chủ
 - POST /api/v1/analyze      : Upload file ảnh và chạy toàn bộ Image Processing Pipeline
+
+
 - GET  /api/v1/presets      : Danh sách các presets và thông số cấu hình
 """
 

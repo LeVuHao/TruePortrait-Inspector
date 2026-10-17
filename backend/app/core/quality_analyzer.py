@@ -70,6 +70,10 @@ def analyze_quality(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config
     # 3. Tự động sinh ảnh cân bằng sáng bằng thuật toán CLAHE
     clahe_enhanced_bgr, clahe_metrics = enhance_lighting_clahe(image_bgr)
     
+    # Tỷ lệ pixel bão hòa sáng / tối phục vụ chẩn đoán lóa sáng cục bộ và thiếu sáng sâu
+    highlight_clipping_ratio = float(np.mean(image_gray >= 248))
+    shadow_clipping_ratio = float(np.mean(image_gray <= 12))
+
     metrics = {
         "sharpness": {
             "passed": sharpness_passed,
@@ -84,6 +88,8 @@ def analyze_quality(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config
             "skewness": round(skewness_val, 3),
             "kurtosis": round(kurtosis_val, 3),
             "mean_saturation": moments["mean_saturation"],
+            "highlight_clipping_ratio": round(highlight_clipping_ratio, 4),
+            "shadow_clipping_ratio": round(shadow_clipping_ratio, 4),
             "bhattacharyya_distance": round(bhattacharyya_dist, 3),
             "chi_square_distance": comparison["chi_square_distance"],
             "threshold_min_mean": min_mean,

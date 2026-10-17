@@ -87,6 +87,7 @@ def analyze_face(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config: d
         face_center_x = x + w / 2.0
         img_center_x = img_w / 2.0
         face_center_offset = abs(face_center_x - img_center_x) / float(img_w)
+        center_direction = "left" if face_center_x < (img_center_x - 0.02 * img_w) else ("right" if face_center_x > (img_center_x + 0.02 * img_w) else "center")
         
         if face_height_ratio < min_ratio:
             size_message = f"Khuôn mặt chiếm {face_height_ratio*100:.1f}% chiều cao ảnh (nhỏ hơn ngưỡng thực nghiệm {min_ratio*100:.0f}%)."
@@ -95,8 +96,10 @@ def analyze_face(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config: d
         else:
             size_message = f"Tỷ lệ chiều cao khuôn mặt đạt chuẩn ({face_height_ratio*100:.1f}%)."
     elif face_count == 0:
+        center_direction = ""
         size_message = "Không phát hiện khuôn mặt nào trong khung hình."
     else:
+        center_direction = ""
         size_message = f"Phát hiện {face_count} khuôn mặt (Yêu cầu duy nhất 1 khuôn mặt)."
         
     return {
@@ -112,6 +115,7 @@ def analyze_face(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config: d
             "threshold_min": min_ratio,
             "threshold_max": max_ratio,
             "center_offset": round(face_center_offset, 3),
+            "center_direction": center_direction,
             "message": size_message
         },
         "bounding_boxes": bounding_boxes
