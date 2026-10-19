@@ -388,6 +388,10 @@ export default function App() {
                         <>
                           <CheckCircle2 size={28} /> ẢNH ĐẠT CHUẨN
                         </>
+                      ) : result.verdict === 'WARNING' ? (
+                        <>
+                          <AlertTriangle size={28} /> TẠM ĐẠT CHUẨN
+                        </>
                       ) : (
                         <>
                           <XCircle size={28} /> KHÔNG ĐẠT CHUẨN
@@ -399,7 +403,16 @@ export default function App() {
                     </div>
                   </div>
                   <div className="score-circle">
-                    <div className="score-number" style={{ color: result.verdict === 'PASS' ? 'var(--success)' : 'var(--danger)' }}>
+                    <div 
+                      className="score-number" 
+                      style={{ 
+                        color: result.verdict === 'PASS' 
+                          ? 'var(--success)' 
+                          : result.verdict === 'WARNING' 
+                            ? 'var(--warning)' 
+                            : 'var(--danger)' 
+                      }}
+                    >
                       {result.overall_score}
                     </div>
                     <div className="score-label">Điểm chất lượng</div>
@@ -590,11 +603,25 @@ export default function App() {
 
                 </div>
 
-                {/* Danh sách lỗi */}
+                {/* Danh sách điểm tốt trong ảnh */}
+                {result.good_points && result.good_points.length > 0 && (
+                  <div className="good-points-container">
+                    <div className="good-points-title">
+                      <Sparkles size={16} /> Các điểm tốt trong ảnh ({result.good_points.length} tiêu chí đạt chuẩn):
+                    </div>
+                    <ul className="good-points-list">
+                      {result.good_points.map((gp, i) => (
+                        <li key={i}>{gp}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Danh sách lỗi / cần hoàn thiện */}
                 {result.reasons && result.reasons.length > 0 && (
                   <div className="reasons-container">
                     <div className="reasons-title">
-                      <AlertTriangle size={16} /> Các điểm chưa đạt:
+                      <AlertTriangle size={16} /> {result.verdict === 'WARNING' ? 'Các điểm cần cải thiện:' : 'Các điểm chưa đạt:'}
                     </div>
                     <ul className="reasons-list">
                       {result.reasons.map((r, i) => (

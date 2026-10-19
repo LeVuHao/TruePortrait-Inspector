@@ -99,6 +99,7 @@ def run_pipeline(file_bytes: bytes, preset_name: str = DEFAULT_PRESET) -> Dict[s
         "verdict": eval_result["verdict"],
         "overall_score": eval_result["overall_score"],
         "summary": eval_result["summary"],
+        "good_points": eval_result.get("good_points", []),
         "reasons": eval_result["reasons"],
         "recommendations": eval_result["recommendations"],
         "bounding_boxes": face_metrics.get("bounding_boxes", []),

@@ -105,7 +105,8 @@ def run_full_pipeline(img_path: str) -> str:
     bg_metrics, _                          = analyze_background(image_bgr, image_gray, preset_config)
     eval_result                            = evaluate_photo(preproc_metrics, face_metrics, quality_metrics, bg_metrics)
 
-    return eval_result["verdict"]
+    v = eval_result["verdict"]
+    return "PASS" if v == "PASS" else "FAIL"
 
 
 # ────────────────────────────────────────────────────────────────────────────

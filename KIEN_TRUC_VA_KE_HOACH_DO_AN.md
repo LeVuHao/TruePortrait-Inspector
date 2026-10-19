@@ -92,8 +92,9 @@
      * `[Ảnh gốc]` | `[Phát hiện mặt & Tỷ lệ]` | `[Vùng 4 góc nền ROI]` | `[Bản đồ viền Laplacian]` | `[Biểu đồ Histogram]`.
      * Cho phép bật/tắt lớp phủ Bounding Box khuôn mặt và các vùng ROI 4 góc nền.
 3. **Cột phải (Diagnostics & Evaluation Panel - 45%):**
-   * **Thẻ Kết luận (Verdict Banner):** Hiển thị rõ **ĐẠT (PASS)** hoặc **KHÔNG ĐẠT (FAIL)** kèm **Quality Score (0 - 100)**.
-   * **Danh sách lý do vi phạm (Failure Reasons):** Nêu rõ nguyên nhân không đạt để người dùng dễ khắc phục.
+   * **Thẻ Kết luận (Verdict Banner):** Phân cấp 3 mức: **ĐẠT CHUẨN (PASS)** (70 - 100 điểm), **TẠM ĐẠT CHUẨN (WARNING)** (40 - 69 điểm), **KHÔNG ĐẠT CHUẨN (FAIL)** (< 40 điểm) kèm **Quality Score (0 - 100)**.
+   * **Danh sách điểm tốt (Good Points / Strengths):** Nêu bật các tiêu chí đạt chuẩn và ưu điểm xuất sắc của bức ảnh.
+   * **Danh sách lý do vi phạm (Failure Reasons / Areas to Improve):** Nêu rõ nguyên nhân chưa đạt để người dùng dễ khắc phục.
    * **Bảng kiểm định chi tiết các tiêu chí (Criteria Breakdown):**
      1. Kích thước ảnh: Chiều rộng x Chiều cao & Tỉ lệ khung hình (Min `600 x 800 px`, `3:4`).
      2. Số lượng khuôn mặt: Số mặt phát hiện (Yêu cầu duy nhất = 1).

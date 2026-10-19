@@ -282,6 +282,11 @@ body {
   border-color: var(--success-border);
 }
 
+.verdict-box.warning {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(245, 158, 11, 0.05));
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
 .verdict-box.fail {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
   border-color: var(--danger-border);
@@ -298,6 +303,10 @@ body {
 
 .verdict-box.pass .verdict-tag {
   color: var(--success);
+}
+
+.verdict-box.warning .verdict-tag {
+  color: var(--warning);
 }
 
 .verdict-box.fail .verdict-tag {
@@ -388,6 +397,41 @@ body {
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-secondary);
+}
+
+/* Good Points / Strengths Box */
+.good-points-container {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: var(--radius-md);
+  animation: fadeSlideIn 0.3s ease-out;
+}
+
+.good-points-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #34d399;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.good-points-list {
+  padding-left: 1.2rem;
+  font-size: 0.83rem;
+  color: #a7f3d0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.55;
+}
+
+.good-points-list li::marker {
+  content: "✔ ";
+  color: #10b981;
 }
 
 /* Reasons Box */
