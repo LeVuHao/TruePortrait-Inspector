@@ -87,8 +87,9 @@ def extract_global_features(
     
     # 5. Phân loại trạng thái quang học dựa trên Đặc trưng Toàn cục
     # Ngưỡng thực nghiệm xác định từ tập dataset 350 ảnh
+    highlight_ratio = float(np.mean(image_gray >= 245))
     is_dark = (mean_val < 90.0) or (bhattacharyya_dist > 0.60 and skewness_val > 0.5)
-    is_overexposed = (mean_val > 215.0)
+    is_overexposed = (mean_val > 215.0) or (highlight_ratio > 0.035)
     is_low_contrast = (std_val < 30.0)
     
     if is_dark:

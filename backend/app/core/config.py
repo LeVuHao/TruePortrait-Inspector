@@ -31,6 +31,15 @@ PRESET_CONFIGS = {
             "max_mean": 210.0,
             # Độ lệch chuẩn đánh giá độ tương phản
             "min_contrast_std": 25.0,
+            # Tỷ lệ pixel bão hòa trắng bốc cháy (>= 245) tối đa cho phép
+            "max_highlight_ratio": 0.035,
+            # Tỷ lệ pixel cháy sáng trên vùng khuôn mặt (Face ROI) tối đa
+            "max_face_highlight_ratio": 0.04,
+            # Độ chênh lệch ánh sáng tối đa giữa 2 nửa mặt trái/phải (Asymmetric Lighting)
+            "max_face_asymmetry": 28.0,
+            # Dải cường độ sáng trung bình cho phép trực tiếp trên vùng khuôn mặt
+            "min_face_mean": 85.0,
+            "max_face_mean": 215.0,
         },
         "sharpness": {
             # Phương sai của toán tử Laplacian (Variance of Laplacian)

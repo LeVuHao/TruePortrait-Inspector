@@ -109,23 +109,24 @@ def standardize_id_photo(
 
         steps_taken.append({
             "step": len(steps_taken) + 1,
-            "name": "Căn chỉnh bố cục & Tỷ lệ 3:4 (Chương 1 & 2)",
+            "name": "Căn chỉnh bố cục & Tỷ lệ 3:4",
             "method": "Auto-Framing & Bicubic Interpolation",
             "description": reason
         })
     else:
         steps_taken.append({
             "step": len(steps_taken) + 1,
-            "name": "Bố cục & Kích thước (Chương 1)",
+            "name": "Bố cục & Kích thước",
             "method": "Preserved Original Framing",
             "description": f"Kích thước ({img_w}x{img_h}) và bố cục ảnh đã đạt chuẩn, giữ nguyên khung hình ban đầu."
         })
 
     # ────────────────────────────────────────────────────────────────────────────
-    # 2. HIỆU CHỈNH ÁNH SÁNG CÓ MỤC TIÊU (Chương 2, Mục 2.1 & Chương 3, Mục 3.5)
+    # 2. HIỆU CHỈNH ÁNH SÁNG CÓ MỤC TIÊU
     # ────────────────────────────────────────────────────────────────────────────
     gray_now = cv2.cvtColor(current_img, cv2.COLOR_BGR2GRAY)
     cur_mean = float(np.mean(gray_now))
+    cur_high_clip = float(np.mean(gray_now >= 245))
     bright_rules = preset_config.get("brightness", {})
     min_mean = bright_rules.get("min_mean", 90.0)
     max_mean = bright_rules.get("max_mean", 210.0)
@@ -145,32 +146,39 @@ def standardize_id_photo(
 
         steps_taken.append({
             "step": len(steps_taken) + 1,
-            "name": "Hiệu chỉnh thiếu sáng (Chương 2 & 3)",
+            "name": "Hiệu chỉnh thiếu sáng",
             "method": "Gamma Power-law & CIELAB CLAHE",
             "description": f"Nâng sáng ảnh tối từ Mean {cur_mean:.1f} lên ~135.0, cân bằng chi tiết khuôn mặt mà không làm sai lệch màu da."
         })
 
-    elif cur_mean > max_mean:
-        # CHÁY SÁNG / CHÓI: Giảm độ sáng có kiểm soát, kéo dải sáng về mức an toàn
-        scale = 190.0 / cur_mean
-        current_img = np.clip(current_img.astype(np.float32) * scale, 0, 255).astype(np.uint8)
+    elif cur_mean > max_mean or cur_high_clip > 0.035:
+        # CHÁY SÁNG / CHÓI CỤC BỘ: Áp dụng đường cong Knee Compression dìm vùng chói trên kênh V (HSV)
+        hsv_temp = cv2.cvtColor(current_img, cv2.COLOR_BGR2HSV)
+        v = hsv_temp[:, :, 2].astype(np.float32)
+        knee_thresh = 195.0
+        mask_knee = v > knee_thresh
+        v[mask_knee] = knee_thresh + (v[mask_knee] - knee_thresh) * 0.35
+        if cur_mean > max_mean:
+            v = v * (190.0 / cur_mean)
+        hsv_temp[:, :, 2] = np.clip(v, 0, 255).astype(np.uint8)
+        current_img = cv2.cvtColor(hsv_temp, cv2.COLOR_HSV2BGR)
 
         steps_taken.append({
             "step": len(steps_taken) + 1,
-            "name": "Giảm chói sáng & Cân bằng phơi sáng (Chương 2)",
-            "method": "Highlight Attenuation & Linear Scaling",
-            "description": f"Hạ cường độ chói sáng từ Mean {cur_mean:.1f} về mức đạt chuẩn 190.0 để phục hồi đường nét khuôn mặt."
+            "name": "Giảm chói sáng & Cân bằng phơi sáng",
+            "method": "Highlight Knee Compression & Attenuation",
+            "description": f"Hạ cường độ chói lóa ({cur_high_clip*100:.1f}% vùng sáng gắt) và dìm ngưỡng bão hòa trắng để phục hồi chi tiết đường nét khuôn mặt."
         })
     else:
         steps_taken.append({
             "step": len(steps_taken) + 1,
-            "name": "Kiểm tra độ sáng (Chương 2)",
+            "name": "Kiểm tra độ sáng",
             "method": "Preserved Photometric Values",
             "description": f"Cường độ sáng trung bình (Mean = {cur_mean:.1f}) nằm trong dải chuẩn [{min_mean}, {max_mean}], giữ nguyên sắc độ gốc."
         })
 
     # ────────────────────────────────────────────────────────────────────────────
-    # 3. LÀM NÉT THÍCH NGHI (Chương 2, Mục 2.2)
+    # 3. LÀM NÉT THÍCH NGHI
     # ────────────────────────────────────────────────────────────────────────────
     final_gray = cv2.cvtColor(current_img, cv2.COLOR_BGR2GRAY)
     cur_lap_var = float(cv2.Laplacian(final_gray, cv2.CV_64F).var())
@@ -188,14 +196,14 @@ def standardize_id_photo(
 
         steps_taken.append({
             "step": len(steps_taken) + 1,
-            "name": "Khôi phục độ sắc nét (Chương 2, Mục 2.2)",
+            "name": "Khôi phục độ sắc nét",
             "method": "Laplacian High-Boost Spatial Filter",
             "description": f"Ảnh bị mờ (Var {cur_lap_var:.1f} < {min_lap_var}), áp dụng lọc vi phân đạo hàm bậc hai để nâng độ nét lên {new_var:.1f}."
         })
     else:
         steps_taken.append({
             "step": len(steps_taken) + 1,
-            "name": "Kiểm tra độ sắc nét (Chương 2)",
+            "name": "Kiểm tra độ sắc nét",
             "method": "Preserved Texture Integrity",
             "description": f"Ảnh đã đạt chuẩn rõ nét (Phương sai Laplacian {cur_lap_var:.1f} >= {min_lap_var}), giữ nguyên độ mịn màng tự nhiên, không làm nét thêm để tránh nhiễu hạt."
         })

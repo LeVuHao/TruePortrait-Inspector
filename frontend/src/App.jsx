@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import './App.css';
 import { 
   Upload, 
@@ -17,7 +17,11 @@ import {
   Sparkles,
   Lightbulb,
   Wand2,
-  Download
+  Download,
+  Video,
+  VideoOff,
+  Aperture,
+  X
 } from 'lucide-react';
 
 
@@ -31,6 +35,14 @@ export default function App() {
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef(null);
 
+  // === WEBCAM STATE ===
+  const [showCamera, setShowCamera] = useState(false);
+  const [cameraStream, setCameraStream] = useState(null);
+  const [cameraReady, setCameraReady] = useState(false);
+  const [countdown, setCountdown] = useState(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+
   const handleFileSelect = (file) => {
     if (!file) return;
     setSelectedFile(file);
@@ -38,6 +50,70 @@ export default function App() {
     setResult(null);
     analyzeImage(file);
   };
+
+  // === WEBCAM FUNCTIONS ===
+  const openCamera = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 960 }, facingMode: 'user' },
+        audio: false
+      });
+      setCameraStream(stream);
+      setShowCamera(true);
+      setCameraReady(false);
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.onloadedmetadata = () => setCameraReady(true);
+        }
+      }, 100);
+    } catch (err) {
+      alert('Không thể mở webcam. Hãy cho phép trình duyệt truy cập camera trong cài đặt.');
+    }
+  }, []);
+
+  const closeCamera = useCallback(() => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(t => t.stop());
+      setCameraStream(null);
+    }
+    setShowCamera(false);
+    setCameraReady(false);
+    setCountdown(null);
+  }, [cameraStream]);
+
+  const capturePhoto = useCallback(() => {
+    if (!videoRef.current || !canvasRef.current) return;
+    let count = 3;
+    setCountdown(count);
+    const tick = setInterval(() => {
+      count -= 1;
+      if (count > 0) {
+        setCountdown(count);
+      } else {
+        clearInterval(tick);
+        setCountdown('📸');
+        setTimeout(() => {
+          const video = videoRef.current;
+          const canvas = canvasRef.current;
+          if (!video || !canvas) return;
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const ctx = canvas.getContext('2d');
+          // Flip horizontally (mirror)
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+          ctx.drawImage(video, 0, 0);
+          canvas.toBlob((blob) => {
+            const file = new File([blob], 'webcam_photo.jpg', { type: 'image/jpeg' });
+            closeCamera();
+            handleFileSelect(file);
+          }, 'image/jpeg', 0.95);
+        }, 300);
+      }
+    }, 1000);
+  }, [closeCamera]);
+
 
   const analyzeImage = async (file) => {
     setLoading(true);
@@ -169,10 +245,20 @@ export default function App() {
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                   Kéo thả ảnh vào đây hoặc bấm để chọn file (JPG, PNG)
                 </p>
-                <button className="btn-upload" style={{ marginTop: '8px' }}>
-                  <Upload size={16} /> Chọn ảnh từ máy
-                </button>
+                <div style={{ display: 'flex', gap: '10px', marginTop: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <button className="btn-upload" onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}>
+                    <Upload size={16} /> Chọn ảnh từ máy
+                  </button>
+                  <button 
+                    className="btn-upload" 
+                    style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', border: '1px solid rgba(139,92,246,0.5)' }}
+                    onClick={(e) => { e.stopPropagation(); openCamera(); }}
+                  >
+                    <Camera size={16} /> Chụp từ webcam
+                  </button>
+                </div>
               </div>
+
             ) : (
               <div>
                 {/* Visual Tabs */}
@@ -226,8 +312,8 @@ export default function App() {
                 <div className="canvas-viewport">
                   {loading ? (
                     <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
-                      <div className="score-number" style={{ fontSize: '1.2rem', color: '#60a5fa' }}>Đang trích xuất Đặc trưng Toàn cục...</div>
-                      <p style={{ fontSize: '0.8rem', marginTop: '6px', color: 'var(--text-muted)' }}>Tính 4 Mô-men thống kê, Histogram 16 bins & Khoảng cách Bhattacharyya</p>
+                      <div className="score-number" style={{ fontSize: '1.2rem', color: '#60a5fa' }}>Đang phân tích ảnh của bạn...</div>
+                      <p style={{ fontSize: '0.8rem', marginTop: '6px', color: 'var(--text-muted)' }}>Hệ thống đang kiểm tra độ sáng, màu sắc và phổ màu so với ảnh thẻ chuẩn</p>
                     </div>
                   ) : (
                     <img 
@@ -273,17 +359,26 @@ export default function App() {
 
                 {/* Re-upload button */}
                 <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <button 
-                    className="tab-btn" 
-                    style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)' }}
-                    onClick={() => {
-                      setPreviewUrl(null);
-                      setResult(null);
-                      setSelectedFile(null);
-                    }}
-                  >
-                    <RotateCcw size={14} /> Tải ảnh khác
-                  </button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button 
+                      className="tab-btn" 
+                      style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)' }}
+                      onClick={() => {
+                        setPreviewUrl(null);
+                        setResult(null);
+                        setSelectedFile(null);
+                      }}
+                    >
+                      <RotateCcw size={14} /> Tải ảnh khác
+                    </button>
+                    <button
+                      className="tab-btn"
+                      style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', borderColor: 'rgba(139,92,246,0.4)' }}
+                      onClick={() => { setPreviewUrl(null); setResult(null); setSelectedFile(null); setTimeout(openCamera, 50); }}
+                    >
+                      <Camera size={14} /> Chụp lại webcam
+                    </button>
+                  </div>
                   {result && (
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                       Độ phân giải: {result.checks.image_size.width}x{result.checks.image_size.height} px
@@ -303,26 +398,36 @@ export default function App() {
                       </span>
                     </div>
 
-                    {/* 4 Cards Mô-men thống kê */}
+                    {/* 4 Cards chỉ số — viết theo ngôn ngữ dễ hiểu */}
                     <div className="global-metrics-grid">
                       <div className="global-metric-box">
-                        <div className="global-metric-label">Mean (μ - Sáng)</div>
+                        <div className="global-metric-label">🌤️ Độ sáng trung bình</div>
                         <div className="global-metric-val">{result.checks.brightness.mean_intensity}</div>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          {result.checks.brightness.mean_intensity < 90 ? '⚠ Ảnh hơi tối' : result.checks.brightness.mean_intensity > 215 ? '⚠ Ảnh quá sáng' : '✓ Sáng vừa phải'}
+                        </div>
                       </div>
                       <div className="global-metric-box">
-                        <div className="global-metric-label">Std Dev (σ - Tương phản)</div>
+                        <div className="global-metric-label">🎨 Độ tương phản màu</div>
                         <div className="global-metric-val">{result.checks.brightness.contrast_std}</div>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>Màu sắc đa dạng hay đơn điệu</div>
                       </div>
                       <div className="global-metric-box">
-                        <div className="global-metric-label">Skewness (S - Lệch)</div>
+                        <div className="global-metric-label">⚖️ Sáng lệch về phía</div>
                         <div className="global-metric-val" style={{ color: result.checks.brightness.skewness < 0 ? '#60a5fa' : '#f87171' }}>
                           {result.checks.brightness.skewness > 0 ? `+${result.checks.brightness.skewness}` : result.checks.brightness.skewness}
                         </div>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          {result.checks.brightness.skewness < -0.5 ? '← Lệch về vùng tối' : result.checks.brightness.skewness > 0.5 ? '→ Lệch về vùng sáng' : '≈ Cân bằng'}
+                        </div>
                       </div>
                       <div className="global-metric-box" style={{ borderColor: result.checks.brightness.bhattacharyya_distance < 0.45 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)' }}>
-                        <div className="global-metric-label">Bhattacharyya (dB)</div>
+                        <div className="global-metric-label">🎯 Phổ màu khớp chuẩn?</div>
                         <div className="global-metric-val" style={{ color: result.checks.brightness.bhattacharyya_distance < 0.45 ? 'var(--success)' : 'var(--danger)' }}>
                           {result.checks.brightness.bhattacharyya_distance}
+                        </div>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          {result.checks.brightness.bhattacharyya_distance < 0.45 ? '✓ Rất giống ảnh chuẩn' : '✗ Khác nhiều so với chuẩn'}
                         </div>
                       </div>
                     </div>
@@ -331,9 +436,9 @@ export default function App() {
                     {result.visual_assets?.histogram_normalized_16 && result.visual_assets?.reference_histogram_16 && (
                       <div className="dual-hist-wrapper">
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
-                          <span>So sánh Histogram chuẩn hóa L1 với Profile ảnh thẻ chuẩn (16 bins):</span>
+                          <span>Biểu đồ màu sắc — ảnh bạn (xanh) vs ảnh thẻ chuẩn (vàng):</span>
                           <span style={{ color: result.checks.brightness.bhattacharyya_distance < 0.45 ? '#34d399' : '#f87171' }}>
-                            {result.checks.brightness.bhattacharyya_distance < 0.45 ? '✓ Phân bố rất khớp chuẩn' : '⚠ Phân bố sai lệch nhiều'}
+                            {result.checks.brightness.bhattacharyya_distance < 0.45 ? '✓ Màu sắc rất khớp chuẩn' : '⚠ Màu sắc lệch nhiều so với chuẩn'}
                           </span>
                         </div>
                         <div className="dual-hist-container">
@@ -352,11 +457,11 @@ export default function App() {
                         <div className="hist-legend">
                           <div className="legend-item">
                             <div className="legend-dot dot-current" />
-                            <span>Ảnh hiện tại (Histogram L1)</span>
+                            <span>Ảnh của bạn</span>
                           </div>
                           <div className="legend-item">
                             <div className="legend-dot dot-ref" />
-                            <span>Profile ảnh thẻ chuẩn (Mẫu tham chiếu 50 ảnh PASS)</span>
+                            <span>Ảnh thẻ chuẩn (mẫu so sánh)</span>
                           </div>
                         </div>
                       </div>
@@ -477,7 +582,7 @@ export default function App() {
                     {result?.standardization_report?.steps && (
                       <div className="std-steps-box">
                         <div className="std-steps-title">
-                          ★ Các bước xử lý thích nghi theo tình trạng ảnh (Giáo trình DIP):
+                          ★ Các bước xử lý thích nghi theo tình trạng ảnh:
                         </div>
 
                         <div className="std-steps-list">
@@ -485,7 +590,7 @@ export default function App() {
                             <div key={i} className="std-step-row">
                               <div className="step-num">{st.step}</div>
                               <div className="step-info">
-                                <div className="step-name">{st.name} <span className="step-method">[{st.method}]</span></div>
+                                <div className="step-name">{st.name?.replace(/\s*\([^)]*Chương[^)]*\)/gi, '').replace(/\s*\([^)]*Mục[^)]*\)/gi, '')}</div>
                                 <div className="step-desc">{st.description}</div>
                               </div>
                             </div>
@@ -510,12 +615,12 @@ export default function App() {
                         {result.checks.image_size.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                       </div>
                       <div>
-                        <div className="crit-title">1. Kích thước & Tỉ lệ khung hình</div>
+                        <div className="crit-title">1. 📐 Kích thước & Tỉ lệ ảnh</div>
                         <div className="crit-desc">{result.checks.image_size.message}</div>
                       </div>
                     </div>
-                    <div className="crit-val-badge">
-                      {result.checks.image_size.width}x{result.checks.image_size.height} | {result.checks.image_size.aspect_ratio}
+                    <div className="crit-val-badge" title="Chiều rộng x Chiều cao và tỉ lệ">
+                      {result.checks.image_size.width}×{result.checks.image_size.height} px
                     </div>
                   </div>
 
@@ -526,12 +631,12 @@ export default function App() {
                         {result.checks.face_count.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                       </div>
                       <div>
-                        <div className="crit-title">2. Số lượng khuôn mặt</div>
+                        <div className="crit-title">2. 👤 Số người trong ảnh</div>
                         <div className="crit-desc">{result.checks.face_count.message}</div>
                       </div>
                     </div>
                     <div className="crit-val-badge">
-                      {result.checks.face_count.detected_count} / {result.checks.face_count.required_count} mặt
+                      Phát hiện {result.checks.face_count.detected_count} người (yêu cầu: {result.checks.face_count.required_count})
                     </div>
                   </div>
 
@@ -542,12 +647,12 @@ export default function App() {
                         {result.checks.face_height_ratio.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                       </div>
                       <div>
-                        <div className="crit-title">3. Tỷ lệ chiều cao khuôn mặt (Face Height Ratio)</div>
+                        <div className="crit-title">3. 🔍 Khuôn mặt chiếm bao nhiêu ảnh?</div>
                         <div className="crit-desc">{result.checks.face_height_ratio.message}</div>
                       </div>
                     </div>
-                    <div className="crit-val-badge">
-                      {(result.checks.face_height_ratio.ratio * 100).toFixed(1)}% ({result.checks.face_height_ratio.threshold_min * 100}% - {result.checks.face_height_ratio.threshold_max * 100}%)
+                    <div className="crit-val-badge" title="Tỉ lệ chiều cao mặt/chiều cao ảnh">
+                      Mặt chiếm {(result.checks.face_height_ratio.ratio * 100).toFixed(1)}% ảnh (yêu cầu {result.checks.face_height_ratio.threshold_min * 100}%–{result.checks.face_height_ratio.threshold_max * 100}%)
                     </div>
                   </div>
 
@@ -558,12 +663,12 @@ export default function App() {
                         {result.checks.sharpness.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                       </div>
                       <div>
-                        <div className="crit-title">4. Độ rõ nét (Phương sai Laplacian)</div>
+                        <div className="crit-title">4. 🔎 Ảnh có rõ nét không?</div>
                         <div className="crit-desc">{result.checks.sharpness.message}</div>
                       </div>
                     </div>
-                    <div className="crit-val-badge">
-                      Var: {result.checks.sharpness.laplacian_variance} (Min {result.checks.sharpness.threshold_min})
+                    <div className="crit-val-badge" title="Điểm nét càng cao càng rõ. Dưới ngưỡng tối thiểu = ảnh mờ">
+                      Điểm nét: {result.checks.sharpness.laplacian_variance} / min {result.checks.sharpness.threshold_min}
                     </div>
                   </div>
 
@@ -575,13 +680,13 @@ export default function App() {
                       </div>
                       <div>
                         <div className="crit-title" style={{ color: '#93c5fd' }}>
-                          ★ 5. Đặc trưng Toàn cục: Quang học & Ánh sáng (Global IQA)
+                          ★ 5. ☀️ Ánh sáng & Màu sắc tổng thể
                         </div>
                         <div className="crit-desc">{result.checks.brightness.message}</div>
                       </div>
                     </div>
-                    <div className="crit-val-badge" style={{ color: result.checks.brightness.passed ? '#34d399' : '#f87171' }}>
-                      {result.checks.brightness.optical_label || 'Đạt chuẩn'} (dB: {result.checks.brightness.bhattacharyya_distance})
+                    <div className="crit-val-badge" style={{ color: result.checks.brightness.passed ? '#34d399' : '#f87171' }} title="Độ khớp phổ màu với ảnh thẻ chuẩn — càng thấp càng tốt">
+                      {result.checks.brightness.optical_label || 'Đạt chuẩn'} — màu sắc khớp {Math.round((1 - Math.min(result.checks.brightness.bhattacharyya_distance, 1)) * 100)}%
                     </div>
                   </div>
 
@@ -592,12 +697,12 @@ export default function App() {
                         {result.checks.background_uniformity.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                       </div>
                       <div>
-                        <div className="crit-title">6. Độ đồng nhất phông nền (4 góc ROI)</div>
+                        <div className="crit-title">6. 🖼️ Phông nền có sạch không?</div>
                         <div className="crit-desc">{result.checks.background_uniformity.message}</div>
                       </div>
                     </div>
-                    <div className="crit-val-badge">
-                      Std 4 góc: {result.checks.background_uniformity.avg_std_dev} (Max {result.checks.background_uniformity.threshold_max_std})
+                    <div className="crit-val-badge" title="Độ loang lổ nền: càng thấp càng đồng màu. Vượt ngưỡng = nền không đều">
+                      Độ loang lổ: {result.checks.background_uniformity.avg_std_dev} / max {result.checks.background_uniformity.threshold_max_std}
                     </div>
                   </div>
 
@@ -652,6 +757,68 @@ export default function App() {
 
         </div>
       </main>
+
+      {/* WEBCAM MODAL — Fixed portal, always renders on top */}
+      {showCamera && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>
+          <div style={{
+            background: 'var(--surface-primary)', borderRadius: '20px',
+            padding: '24px', width: 'min(560px, 95vw)',
+            border: '1px solid rgba(139,92,246,0.4)', boxShadow: '0 0 60px rgba(139,92,246,0.3)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444', animation: 'pulse 1.5s infinite' }} />
+                <span style={{ fontWeight: 700, fontSize: '1rem' }}>Camera đang bật — Nhìn thẳng vào ống kính</span>
+              </div>
+              <button onClick={closeCamera} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: '8px', padding: '6px', cursor: 'pointer' }}>
+                <X size={18} />
+              </button>
+            </div>
+            <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#000' }}>
+              <video ref={videoRef} autoPlay playsInline muted
+                style={{ width: '100%', display: 'block', transform: 'scaleX(-1)', maxHeight: '360px', objectFit: 'cover' }}
+              />
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                <div style={{ width: '160px', height: '200px', border: '2px dashed rgba(139,92,246,0.8)', borderRadius: '50% 50% 45% 45%' }} />
+              </div>
+              {countdown !== null && (
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)' }}>
+                  <span style={{ fontSize: countdown === '📸' ? '4rem' : '6rem', fontWeight: 900, color: '#fff', textShadow: '0 0 30px rgba(139,92,246,0.9)' }}>
+                    {countdown}
+                  </span>
+                </div>
+              )}
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', margin: '12px 0 8px' }}>
+              💡 Đặt khuôn mặt vào trong khung oval · Nhìn thẳng · Phông nền sáng đều
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={capturePhoto}
+                disabled={!cameraReady || countdown !== null}
+                style={{
+                  flex: 1, padding: '12px', borderRadius: '10px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer',
+                  background: cameraReady && countdown === null ? 'linear-gradient(135deg, #7c3aed, #4f46e5)' : 'rgba(255,255,255,0.1)',
+                  color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+                }}
+              >
+                <Aperture size={20} />
+                {!cameraReady ? 'Đang khởi động camera...' : countdown !== null ? 'Đang chụp...' : '📸 Chụp ảnh (tự đếm ngược 3 giây)'}
+              </button>
+              <button onClick={closeCamera} style={{ padding: '12px 16px', borderRadius: '10px', background: 'rgba(239,68,68,0.2)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', cursor: 'pointer', fontWeight: 600 }}>
+                Hủy
+              </button>
+            </div>
+          </div>
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
+        </div>
+      )}
     </div>
   );
 }
+

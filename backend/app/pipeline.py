@@ -59,7 +59,9 @@ def run_pipeline(file_bytes: bytes, preset_name: str = DEFAULT_PRESET) -> Dict[s
     face_metrics = analyze_face(image_bgr, image_gray, preset_config)
     
     # 3. Module 3: Chất lượng ảnh & Đặc trưng Toàn Cục (Chương & Hảo)
-    quality_metrics, laplacian_map, clahe_enhanced_bgr = analyze_quality(image_bgr, image_gray, preset_config)
+    quality_metrics, laplacian_map, clahe_enhanced_bgr = analyze_quality(
+        image_bgr, image_gray, preset_config, face_boxes=face_metrics.get("bounding_boxes", [])
+    )
     
     # 4. Module 4: Độ đồng nhất nền (Huy)
     bg_metrics, bg_visual_img = analyze_background(image_bgr, image_gray, preset_config)

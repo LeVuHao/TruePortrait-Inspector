@@ -154,24 +154,41 @@ def evaluate_photo(
     bright_passed = bright_data.get("passed", False)
     mean_b = bright_data.get("mean_intensity", 128.0)
     std_b = bright_data.get("contrast_std", 35.0)
+    high_clip = bright_data.get("highlight_clipping_ratio", 0.0) * 100.0
+    face_photo = bright_data.get("face_photometry", {})
+    face_high_clip = face_photo.get("face_highlight_ratio", 0.0) * 100.0
+    face_asym = face_photo.get("face_asymmetry", 0.0)
+
     if bright_passed:
         current_score += SCORING_WEIGHTS["brightness"]
         good_points.append(
             f"Ánh sáng & Phơi sáng hài hòa: Cường độ sáng trung bình {mean_b:.1f}/255 và độ tương phản {std_b:.1f} đạt chuẩn, biểu đồ sắc độ cân đối, không bị chói lóa hay tối sạm."
         )
     else:
-        high_clip = bright_data.get("highlight_clipping_ratio", 0.0) * 100.0
         min_m = bright_data.get("threshold_min_mean", 90.0)
         max_m = bright_data.get("threshold_max_mean", 210.0)
         
-        if mean_b > max_m or high_clip > 15.0:
-            if mean_b > 225.0 or high_clip > 35.0:
-                reasons.append(f"Ảnh bị cháy sáng nặng (Độ sáng trung bình {mean_b:.1f} > {max_m:.0f}, {high_clip:.1f}% diện tích bị lóa trắng) – bão hòa mức sáng cao làm lóa trắng và mất hoàn toàn chi tiết da mặt.")
-                recommendations.append("Tránh ánh nắng gay gắt chiếu thẳng vào mặt hoặc tắt đèn flash đánh trực diện ở khoảng cách gần; giảm thanh phơi sáng camera xuống (-0.7 đến -1.0 EV).")
+        # 1. Chẩn đoán chói sáng / cháy sáng
+        if high_clip > 3.5 or mean_b > max_m:
+            if high_clip > 15.0 or mean_b > 225.0:
+                reasons.append(f"Ảnh bị cháy sáng nghiêm trọng (Độ sáng {mean_b:.1f}, {high_clip:.1f}% diện tích bị lóa trắng) – nguồn sáng cực mạnh rọi trực diện làm mất hoàn toàn chi tiết da và hậu cảnh.")
+                recommendations.append("Tắt đèn chiếu rọi trực diện hoặc tránh đứng sát bóng đèn/cửa sổ nắng gắt; hạ thanh phơi sáng camera xuống (-0.7 đến -1.0 EV).")
             else:
-                reasons.append(f"Ảnh hơi sáng chói / phơi sáng cao (Độ sáng trung bình {mean_b:.1f} > {max_m:.0f}, {high_clip:.1f}% vùng sáng gắt) – vùng trán, sống mũi hoặc gò má bị bóng dầu lóa sáng nhẹ.")
-                recommendations.append("Hạ nhẹ thanh phơi sáng (biểu tượng mặt trời trên camera) xuống -0.3 đến -0.5 EV; nếu da mặt bị bóng dầu, hãy dùng giấy thấm dầu trước khi chụp.")
-        elif mean_b < min_m:
+                reasons.append(f"Ảnh bị chói sáng / cháy sáng cục bộ ({high_clip:.1f}% diện tích bị lóa trắng) – có nguồn sáng mạnh hoặc đèn rọi chiếu thẳng vào khung hình gây lóa mắt.")
+                recommendations.append("Di chuyển góc chụp tránh nguồn sáng chói phía sau hoặc bên cạnh; để ánh sáng chiếu dịu đều từ phía trước mặt.")
+        
+        # 2. Chẩn đoán chói lóa trên khuôn mặt
+        if face_high_clip > 4.0:
+            reasons.append(f"Khuôn mặt bị lóa sáng bóng dầu ({face_high_clip:.1f}% diện tích mặt bị chói trắng) – mất chi tiết vùng trán, gò má hoặc sống mũi.")
+            recommendations.append("Dùng giấy thấm dầu lau nhẹ vùng trán và sống mũi trước khi chụp; giảm thanh phơi sáng nhẹ trên camera.")
+
+        # 3. Chẩn đoán bất đối xứng chiếu sáng 2 bên mặt
+        if face_asym > 25.0:
+            reasons.append(f"Ánh sáng chiếu lệch một bên mặt (chênh lệch {face_asym:.1f} mức sáng giữa hai nửa mặt) – một bên mặt bị sáng gắt trong khi bên kia bị tối bóng.")
+            recommendations.append("Ngồi chính diện với nguồn sáng (như cửa sổ hoặc đèn trần), tránh để nguồn sáng rọi mạnh từ một bên tai.")
+
+        # 4. Chẩn đoán thiếu sáng
+        if mean_b < min_m:
             if mean_b >= 75.0:
                 reasons.append(f"Ảnh hơi thiếu sáng nhẹ (Độ sáng trung bình {mean_b:.1f} < {min_m:.0f}) – tổng thể khuôn mặt hơi tối sạm, chưa đủ độ tươi sáng rạng rỡ của ảnh thẻ chuẩn.")
                 recommendations.append("Bật thêm 1 bóng đèn trong phòng hoặc quay mặt chếch 45 độ về phía cửa sổ có ánh sáng tự nhiên ban ngày.")
@@ -179,6 +196,7 @@ def evaluate_photo(
                 reasons.append(f"Ảnh thiếu sáng nghiêm trọng / quá tối (Độ sáng trung bình {mean_b:.1f} < {min_m:.0f}) – khuôn mặt bị chìm trong bóng tối, xuất hiện nhiều hạt nhiễu (noise) do camera đẩy ISO cao.")
                 recommendations.append("Di chuyển ra vị trí có ánh sáng tốt hơn, để nguồn sáng chiếu thẳng vào mặt (tránh chụp ngược sáng trước cửa sổ hoặc đèn trần phía sau).")
         
+        # 5. Chẩn đoán độ tương phản
         if std_b < 25.0:
             reasons.append(f"Ảnh bị bạc màu / độ tương phản yếu (Độ lệch chuẩn {std_b:.1f} < 25.0) – ảnh trông mờ đục như phủ một lớp sương mù, thiếu chiều sâu giữa vùng sáng và tối.")
             recommendations.append("Lau sạch ống kính camera bằng vải mềm (dấu vân tay bám trên kính thường gây hiện tượng lóa mờ sương), tránh để nguồn sáng rọi thẳng vào ống kính.")
@@ -230,23 +248,40 @@ def evaluate_photo(
             recommendations.append("Chọn bức tường trơn phẳng đồng màu, chiếu sáng đều 4 góc hậu cảnh để tạo nền đồng nhất tuyệt đối.")
 
     # ────────────────────────────────────────────────────────────────────────────
-    # KẾT LUẬN TỔNG THỂ (VERDICT RULE):
+    # KẾT LUẬN TỔNG THỂ (VERDICT RULE - HỌC THUẬT & CHẶT CHẼ):
     # ────────────────────────────────────────────────────────────────────────────
-    # Quy tắc phân cấp theo thang điểm:
-    # - Điểm từ 70 -> 100: ĐẠT CHUẨN (PASS)
-    # - Điểm từ 40 -> 69 (bao gồm 40-60): TẠM ĐẠT CHUẨN (WARNING)
-    # - Điểm < 40:        KHÔNG ĐẠT CHUẨN (FAIL)
-    # Yêu cầu tiên quyết: Bắt buộc phải có đúng 1 khuôn mặt trực diện.
+    # Điều kiện tiên quyết để PASS (Đạt chuẩn):
+    # 1. Đúng 1 khuôn mặt hợp lệ (face_count_passed)
+    # 2. Ảnh phải rõ nét (sharpness_passed) - ảnh mờ/nhòe tuyệt đối không được PASS
+    # 3. Ánh sáng phải đạt chuẩn (bright_passed) - ảnh chói lóa / tối sạm tuyệt đối không được PASS
+    # 4. Điểm tổng thể >= 70
+    
+    critical_quality_passed = face_count_passed and sharp_passed and bright_passed
 
     if not face_count_passed:
         verdict = "FAIL"
         summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({current_score}/100) do không phát hiện đúng 1 khuôn mặt trực diện hợp lệ."
-    elif current_score >= 70:
+    elif not sharp_passed or not bright_passed:
+        # Nếu vi phạm chất lượng quang học cốt lõi (mờ nét hoặc chói lóa/tối sạm):
+        quality_fails = []
+        if not sharp_passed:
+            quality_fails.append("ảnh bị mờ/nhòe")
+        if not bright_passed:
+            quality_fails.append("ánh sáng chưa đạt chuẩn (bị chói lóa hoặc thiếu sáng)")
+        fail_desc = " và ".join(quality_fails)
+        
+        if current_score >= 45:
+            verdict = "WARNING"
+            summary = f"Ảnh thẻ CẦN CHỤP LẠI ({current_score}/100) – Dù đạt bố cục nhưng chất lượng quang học chưa đạt yêu cầu ({fail_desc})."
+        else:
+            verdict = "FAIL"
+            summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({current_score}/100) do vi phạm nhiều tiêu chí chất lượng kỹ thuật ({fail_desc})."
+    elif current_score >= 70 and critical_quality_passed:
         verdict = "PASS"
         if len(reasons) == 0:
             summary = f"Ảnh thẻ ĐẠT TIÊU CHUẨN xuất sắc ({current_score}/100) – Thỏa mãn toàn diện các yêu cầu kỹ thuật và bố cục ảnh thẻ."
         else:
-            summary = f"Ảnh thẻ ĐẠT TIÊU CHUẨN ({current_score}/100) – Chất lượng ảnh tốt với {len(good_points)} tiêu chuẩn đạt chuẩn."
+            summary = f"Ảnh thẻ ĐẠT TIÊU CHUẨN ({current_score}/100) – Đạt các tiêu chuẩn chất lượng quang học quan trọng."
     elif current_score >= 40:
         verdict = "WARNING"
         summary = f"Ảnh thẻ TẠM ĐẠT CHUẨN ({current_score}/100) – Đạt {len(good_points)} tiêu chí tốt, có {len(reasons)} điểm cần cải thiện để đạt chất lượng in ấn tối ưu."
