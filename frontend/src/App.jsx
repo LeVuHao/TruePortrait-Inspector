@@ -473,26 +473,37 @@ export default function App() {
                       </button>
                     </div>
 
-                    {/* Các phương pháp toán học DIP đã áp dụng */}
-                    {result?.standardization_report?.steps && (
-                      <div className="std-steps-box">
-                        <div className="std-steps-title">
-                          ★ Các bước xử lý thích nghi theo tình trạng ảnh (Giáo trình DIP):
-                        </div>
-
-                        <div className="std-steps-list">
-                          {result.standardization_report.steps.map((st, i) => (
-                            <div key={i} className="std-step-row">
-                              <div className="step-num">{st.step}</div>
-                              <div className="step-info">
-                                <div className="step-name">{st.name} <span className="step-method">[{st.method}]</span></div>
-                                <div className="step-desc">{st.description}</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                    {/* Nhận xét sơ qua về khung ảnh & bố cục */}
+                    <div className="std-overview-box">
+                      <div className="std-overview-title">
+                        <Camera size={15} /> Nhận xét sơ bộ về khung ảnh:
                       </div>
-                    )}
+                      <div className="std-overview-points">
+                        {result?.standardization_report?.framing_notes && result.standardization_report.framing_notes.length > 0 ? (
+                          result.standardization_report.framing_notes.map((note, i) => (
+                            <div key={i} className="std-point-row">
+                              <span className="std-point-dot">●</span>
+                              <span>{note}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <>
+                            <div className="std-point-row">
+                              <span className="std-point-dot">●</span>
+                              <span>Khung hình đã được căn chỉnh theo chuẩn tỷ lệ 3:4 ({result.standardization_report?.standardized_width}x{result.standardization_report?.standardized_height} px), khuôn mặt nằm ở vị trí trung tâm ngay ngắn.</span>
+                            </div>
+                            <div className="std-point-row">
+                              <span className="std-point-dot">●</span>
+                              <span>Tỷ lệ chiều cao khuôn mặt chiếm ~54% khung hình, khoảng thở đỉnh đầu và hai bên vai cân đối chuẩn ảnh thẻ ICAO.</span>
+                            </div>
+                            <div className="std-point-row">
+                              <span className="std-point-dot">●</span>
+                              <span>Màu sắc và ánh sáng tổng thể được bảo toàn tự nhiên, sẵn sàng in ấn hoặc dán hồ sơ.</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 )}
 
