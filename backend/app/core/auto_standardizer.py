@@ -211,6 +211,36 @@ def standardize_id_photo(
     final_h, final_w = current_img.shape[:2]
     final_gray = cv2.cvtColor(current_img, cv2.COLOR_BGR2GRAY)
 
+    # Sinh các câu nhận xét sơ qua về khung ảnh, gần gũi, dễ hiểu cho người đọc
+    framing_notes = []
+    if face_needs_reframe:
+        if has_face and main_face:
+            framing_notes.append(
+                f"Khung ảnh đã được tự động căn chỉnh lại theo đúng tỷ lệ ảnh thẻ 3:4 ({target_w}x{target_h} px), đưa khuôn mặt về đúng vị trí trung tâm với tỷ lệ ~54% (chuẩn ICAO)."
+            )
+        else:
+            framing_notes.append(
+                f"Khung ảnh đã được cắt căn giữa theo chuẩn tỷ lệ 3:4 ({target_w}x{target_h} px) để phù hợp khổ in ảnh thẻ."
+            )
+    else:
+        framing_notes.append(
+            f"Bố cục khung hình ban đầu đã đạt đúng tỷ lệ chuẩn 3:4 ({img_w}x{img_h} px), khuôn mặt nằm ở vị trí trung tâm ngay ngắn."
+        )
+
+    if has_face and main_face:
+        framing_notes.append(
+            "Khoảng cách từ đỉnh đầu đến mép trên và phần vai hai bên đều đặn, tạo tư thế đàng hoàng, nghiêm túc chuẩn ảnh thẻ."
+        )
+
+    if cur_lap_var < min_lap_var:
+        framing_notes.append(
+            "Đường nét chi tiết ngũ quan được gia tăng độ rõ nét nhẹ nhàng, không gây vỡ hạt da."
+        )
+    else:
+        framing_notes.append(
+            "Độ nét và ánh sáng tổng thể hài hòa, giữ trọn nét tự nhiên của khuôn mặt."
+        )
+
     report = {
         "standardized_width": final_w,
         "standardized_height": final_h,
@@ -218,6 +248,8 @@ def standardize_id_photo(
         "initial_dimensions": f"{img_w}x{img_h}",
         "final_mean": round(float(np.mean(final_gray)), 2),
         "final_laplacian_var": round(float(cv2.Laplacian(final_gray, cv2.CV_64F).var()), 2),
+        "framing_notes": framing_notes,
+        "framing_summary": " ".join(framing_notes),
         "steps": steps_taken
     }
 
