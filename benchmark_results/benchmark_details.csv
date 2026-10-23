@@ -15,7 +15,7 @@ pass/id_004.jpg,PASS,PASS,None,True
 fail_blur/id_004.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_004.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_004.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
-pass/id_005.jpg,PASS,FAIL,None,False
+pass/id_005.jpg,PASS,PASS,None,True
 fail_blur/id_005.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_005.jpg,FAIL,FAIL,FAIL_DARK,True
 fail_overexposed/id_005.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
@@ -106,7 +106,7 @@ fail_overexposed/id_026.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
 pass/id_027.jpg,PASS,PASS,None,True
 fail_blur/id_027.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_027.jpg,FAIL,FAIL,FAIL_DARK,True
-fail_overexposed/id_027.jpg,FAIL,FAIL,FAIL_OVEREXPOSED,True
+fail_overexposed/id_027.jpg,FAIL,PASS,FAIL_OVEREXPOSED,False
 pass/id_028.jpg,PASS,PASS,None,True
 fail_blur/id_028.jpg,FAIL,FAIL,FAIL_BLUR,True
 fail_dark/id_028.jpg,FAIL,FAIL,FAIL_DARK,True

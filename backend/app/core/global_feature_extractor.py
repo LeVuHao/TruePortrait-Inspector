@@ -21,15 +21,30 @@ import numpy as np
 from typing import Dict, Any, Tuple, List
 
 
-# Vector phân bố Histogram tham chiếu chuẩn (Tính toán từ thực nghiệm 50 ảnh chuẩn PASS)
-REFERENCE_HIST_16 = np.array([
+# Vector phân bố Histogram tham chiếu chuẩn nền trắng (ICAO White Background)
+REFERENCE_HIST_16_WHITE = np.array([
     0.0172, 0.0241, 0.0229, 0.0251, 0.0339, 0.0396, 
     0.0407, 0.0416, 0.0438, 0.0432, 0.0377, 0.0296, 
     0.0203, 0.0168, 0.0070, 0.5562
 ], dtype=np.float32)
 
-REFERENCE_MEAN = 193.4
-REFERENCE_STD = 77.7
+# Vector phân bố Histogram tham chiếu chuẩn nền xanh (Vietnam Student / Standard Blue Background)
+REFERENCE_HIST_16_BLUE = np.array([
+    0.0200, 0.0300, 0.0350, 0.0300, 0.0250, 0.0350, 
+    0.0950, 0.2800, 0.2200, 0.0850, 0.0550, 0.0400, 
+    0.0300, 0.0250, 0.0250, 0.0700
+], dtype=np.float32)
+REFERENCE_HIST_16_BLUE = REFERENCE_HIST_16_BLUE / np.sum(REFERENCE_HIST_16_BLUE)
+
+REFERENCE_HIST_16 = REFERENCE_HIST_16_WHITE
+
+REFERENCE_MEAN_WHITE = 193.4
+REFERENCE_STD_WHITE = 77.7
+REFERENCE_MEAN_BLUE = 142.0
+REFERENCE_STD_BLUE = 60.5
+
+REFERENCE_MEAN = REFERENCE_MEAN_WHITE
+REFERENCE_STD = REFERENCE_STD_WHITE
 
 
 def extract_global_features(
@@ -46,6 +61,8 @@ def extract_global_features(
     Returns:
         dict chứa các mô-men thống kê, histogram chuẩn hóa, khoảng cách Bhattacharyya và phân loại
     """
+    img_h, img_w = image_gray.shape[:2]
+
     # 1. Bộ 4 mô-men thống kê mức xám
     mean_val = float(np.mean(image_gray))
     std_val = float(np.std(image_gray))
@@ -66,31 +83,80 @@ def extract_global_features(
     hist_list = [round(float(v), 4) for v in hist_norm_16]
     hist_counts = [int(v[0]) for v in hist_raw]
     
-    # 3. Phân tích không gian màu HSV
+    # 3. Phân tích không gian màu HSV & Nhận diện màu phông nền sơ bộ
     image_hsv = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2HSV)
     sat_channel = image_hsv[:, :, 1]
     val_channel = image_hsv[:, :, 2]
     mean_saturation = float(np.mean(sat_channel))
     mean_value = float(np.mean(val_channel))
     
-    # 4. Đo khoảng cách so sánh với Profile ảnh chuẩn tham chiếu (Bhattacharyya & Chi-Square)
-    bhattacharyya_dist = float(cv2.compareHist(
+    # Lấy mẫu màu 4 góc nền
+    rw = max(int(img_w * 0.12), 10)
+    rh = max(int(img_h * 0.12), 10)
+    corner_rois_hsv = [
+        image_hsv[0:rh, 0:rw],
+        image_hsv[0:rh, img_w-rw:img_w],
+        image_hsv[img_h-rh:img_h, 0:rw],
+        image_hsv[img_h-rh:img_h, img_w-rw:img_w]
+    ]
+    corner_pixels_hsv = np.vstack([c.reshape(-1, 3) for c in corner_rois_hsv])
+    median_hsv = np.median(corner_pixels_hsv, axis=0)
+    med_h, med_s, med_v = float(median_hsv[0]), float(median_hsv[1]), float(median_hsv[2])
+
+    is_blue_bg = (85 <= med_h <= 135) and (med_s >= 30)
+    is_white_bg = (med_s < 45) and (med_v >= 170)
+
+    # 4. Đo khoảng cách so sánh với Profile ảnh chuẩn tham chiếu thích ứng
+    d_white = float(cv2.compareHist(
         hist_norm_16.reshape(-1, 1), 
-        REFERENCE_HIST_16.reshape(-1, 1), 
+        REFERENCE_HIST_16_WHITE.reshape(-1, 1), 
         cv2.HISTCMP_BHATTACHARYYA
     ))
-    chi_square_dist = float(cv2.compareHist(
+    d_blue = float(cv2.compareHist(
         hist_norm_16.reshape(-1, 1), 
-        REFERENCE_HIST_16.reshape(-1, 1), 
+        REFERENCE_HIST_16_BLUE.reshape(-1, 1), 
+        cv2.HISTCMP_BHATTACHARYYA
+    ))
+
+    chi_white = float(cv2.compareHist(
+        hist_norm_16.reshape(-1, 1), 
+        REFERENCE_HIST_16_WHITE.reshape(-1, 1), 
         cv2.HISTCMP_CHISQR
     ))
-    
+    chi_blue = float(cv2.compareHist(
+        hist_norm_16.reshape(-1, 1), 
+        REFERENCE_HIST_16_BLUE.reshape(-1, 1), 
+        cv2.HISTCMP_CHISQR
+    ))
+
+    # Nếu phát hiện phông nền xanh (hoặc histogram khớp với phông xanh tốt hơn nhiều), chọn profile phông xanh
+    if is_blue_bg or (d_blue < d_white and not is_white_bg):
+        bhattacharyya_dist = d_blue
+        chi_square_dist = chi_blue
+        target_ref_hist = REFERENCE_HIST_16_BLUE
+        ref_mean = REFERENCE_MEAN_BLUE
+        ref_std = REFERENCE_STD_BLUE
+        ref_bg_type = "BLUE_BACKGROUND"
+    else:
+        bhattacharyya_dist = d_white
+        chi_square_dist = chi_white
+        target_ref_hist = REFERENCE_HIST_16_WHITE
+        ref_mean = REFERENCE_MEAN_WHITE
+        ref_std = REFERENCE_STD_WHITE
+        ref_bg_type = "WHITE_BACKGROUND"
+
     # 5. Phân loại trạng thái quang học dựa trên Đặc trưng Toàn cục
-    # Ngưỡng thực nghiệm xác định từ tập dataset 350 ảnh
-    highlight_ratio = float(np.mean(image_gray >= 245))
-    is_dark = (mean_val < 90.0) or (bhattacharyya_dist > 0.60 and skewness_val > 0.5)
-    is_overexposed = (mean_val > 215.0) or (highlight_ratio > 0.035)
-    is_low_contrast = (std_val < 30.0)
+    # Loại trừ phần áo phía dưới khi đo highlight ratio để tránh nhầm áo sơ mi trắng với chói sáng
+    upper_h = int(img_h * 0.65)
+    upper_highlight_ratio = float(np.mean(image_gray[:upper_h, :] >= 245))
+
+    if is_white_bg:
+        is_overexposed = (mean_val > 222.0)
+    else:
+        is_overexposed = (mean_val > 215.0) or (upper_highlight_ratio > 0.05)
+
+    is_dark = (mean_val < 90.0) or (bhattacharyya_dist > 0.55 and skewness_val > 0.6)
+    is_low_contrast = (std_val < 25.0)
     
     if is_dark:
         optical_status = "DARK"
@@ -127,12 +193,13 @@ def extract_global_features(
         },
         "histogram_16": hist_list,
         "histogram_counts": hist_counts,
-        "reference_histogram_16": [round(float(v), 4) for v in REFERENCE_HIST_16],
+        "reference_histogram_16": [round(float(v), 4) for v in target_ref_hist],
         "comparison": {
             "bhattacharyya_distance": round(bhattacharyya_dist, 3),
             "chi_square_distance": round(chi_square_dist, 3),
-            "reference_mean": REFERENCE_MEAN,
-            "reference_std": REFERENCE_STD
+            "reference_mean": ref_mean,
+            "reference_std": ref_std,
+            "reference_bg_type": ref_bg_type
         },
         "optical_classification": {
             "status": optical_status,
@@ -144,40 +211,63 @@ def extract_global_features(
     }
 
 
-def enhance_lighting_clahe(image_bgr: np.ndarray) -> Tuple[np.ndarray, Dict[str, Any]]:
+def enhance_portrait_smooth_sharp(image_bgr: np.ndarray) -> Tuple[np.ndarray, Dict[str, Any]]:
     """
-    Thuật toán tự động hiệu chỉnh và cân bằng sáng toàn cục (CLAHE) trên không gian màu LAB.
-    Giữ nguyên màu da tự nhiên và tăng cường độ tương phản hài hòa.
-    
+    Thuật toán Làm Mịn Da & Tăng Cường Độ Nét Chân Dung Chuẩn Giáo Trình XLA (DIP):
+    1. Làm mịn da bảo toàn cạnh (Edge-Preserving Skin Smoothing - Chương 3 DIP):
+       - Áp dụng Bilateral Filter (Lọc song phương).
+       - Làm mờ hạt nhiễu, lỗ chân lông và làm mịn da nhưng bảo toàn nguyên vẹn 100% 
+         các đường biên cạnh có độ dốc lớn (mắt, con ngươi, sống mũi, bờ môi, viền tóc).
+    2. Tăng cường độ nét chi tiết (High-Boost Sharpening / Unsharp Masking - Chương 3.6 DIP):
+       - Trích xuất mặt nạ chi tiết biên tần số cao: mask = f_smooth - GaussianBlur(f_smooth).
+       - Khuếch đại viền mắt, sợi tóc, chân mày giúp ảnh nét căng, sắc sảo như app chỉnh ảnh điện thoại.
+    3. Thích ứng ánh sáng tự nhiên (Adaptive Natural Tone):
+       - Nếu ảnh bị thiếu sáng (< 90), nâng sáng nhẹ nhàng bằng Gamma Power-law mà không làm cháy trắng phông nền.
+       
     Args:
         image_bgr: Ảnh gốc BGR
         
     Returns:
         tuple (enhanced_image_bgr, metrics_after)
     """
-    # 1. Chuyển đổi sang không gian màu CIELAB
-    lab = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2LAB)
-    l_channel, a_channel, b_channel = cv2.split(lab)
+    img_gray = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY)
+    mean_val = float(np.mean(img_gray))
+    work_img = image_bgr.copy()
     
-    # 2. Áp dụng CLAHE (Contrast Limited Adaptive Histogram Equalization) trên kênh L (Luminance)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    cl = clahe.apply(l_channel)
+    # Nếu ảnh quá tối thì nâng sáng dịu bằng Gamma trước
+    if mean_val < 90.0:
+        gamma = 0.72
+        lut = np.array([np.clip(((i / 255.0) ** gamma) * 255.0, 0, 255) for i in range(256)]).astype('uint8')
+        work_img = cv2.LUT(work_img, lut)
+        
+    # Bước 1: Lọc song phương (Bilateral Filter) làm mịn da mặt nhưng giữ nguyên viền mắt, mũi, miệng
+    # d=9: Bán kính lân cận; sigmaColor=45: Ngưỡng chênh lệch màu; sigmaSpace=45: Không gian tọa độ
+    smooth = cv2.bilateralFilter(work_img, d=9, sigmaColor=45, sigmaSpace=45)
     
-    # 3. Gộp lại và chuyển về BGR
-    enhanced_lab = cv2.merge((cl, a_channel, b_channel))
-    enhanced_bgr = cv2.cvtColor(enhanced_lab, cv2.COLOR_LAB2BGR)
+    # Bước 2: Unsharp Masking (High-Boost Filter) làm nét đanh sợi tóc, con ngươi mắt và viền môi
+    # Công thức DIP: f_sharp = smooth + k * (smooth - gaussian_blur)
+    gaussian = cv2.GaussianBlur(smooth, (0, 0), sigmaX=2.0)
+    enhanced_bgr = cv2.addWeighted(smooth, 1.45, gaussian, -0.45, 0)
     
-    # 4. Tính toán số liệu sau khi cải thiện
+    # Tính toán thông số sau khi làm mịn và tăng nét
     enhanced_gray = cv2.cvtColor(enhanced_bgr, cv2.COLOR_BGR2GRAY)
     new_mean = float(np.mean(enhanced_gray))
     new_std = float(np.std(enhanced_gray))
+    new_lap_var = float(cv2.Laplacian(enhanced_gray, cv2.CV_64F).var())
     new_hist = cv2.calcHist([enhanced_gray], [0], None, [16], [0, 256]).flatten()
     new_hist_norm = (new_hist / (enhanced_gray.size + 1e-7)).tolist()
     
     metrics_after = {
         "new_mean": round(new_mean, 2),
         "new_std": round(new_std, 2),
+        "new_laplacian_var": round(new_lap_var, 2),
         "new_histogram_16": [round(float(v), 4) for v in new_hist_norm]
     }
     
     return enhanced_bgr, metrics_after
+
+
+# Alias tương thích ngược để không ảnh hưởng đến các module khác
+enhance_lighting_clahe = enhance_portrait_smooth_sharp
+
+

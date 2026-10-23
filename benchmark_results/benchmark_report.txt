@@ -6,13 +6,13 @@
   Confusion Matrix:
                                  | Pred PASS | Pred FAIL
   ------------------------------------------------------------
-  Ground Truth: PASS             |  TP=   49  |  FN=    1
-  Ground Truth: FAIL             |  FP=    0  |  TN=  300
+  Ground Truth: PASS             |  TP=   50  |  FN=    0
+  Ground Truth: FAIL             |  FP=    1  |  TN=  299
 
   Accuracy  : 99.71%  (349/350 du doan dung)
-  Precision : 100.00%  (trong so luong PASS he thong du doan, bao nhieu thuc su la PASS)
-  Recall    : 98.00%  (trong so luong PASS thuc su, he thong bat duoc bao nhieu)
-  F1-Score  : 98.99%
+  Precision : 98.04%  (trong so luong PASS he thong du doan, bao nhieu thuc su la PASS)
+  Recall    : 100.00%  (trong so luong PASS thuc su, he thong bat duoc bao nhieu)
+  F1-Score  : 99.01%
 
   Chi tiet theo tung loai loi:
   Loai loi                  | Tong   | Dung   | Sai    | Acc %   
@@ -22,6 +22,6 @@
   FAIL_DARK                 | 50     | 50     | 0      | 100.0%
   FAIL_FACE_COUNT           | 50     | 50     | 0      | 100.0%
   FAIL_FACE_SIZE            | 50     | 50     | 0      | 100.0%
-  FAIL_OVEREXPOSED          | 50     | 50     | 0      | 100.0%
+  FAIL_OVEREXPOSED          | 50     | 49     | 1      | 98.0%
 
 =================================================================

@@ -38,9 +38,9 @@ def preprocess_image(file_bytes: bytes, preset_config: dict) -> Tuple[np.ndarray
     # 3. Phân tích kích thước & Aspect Ratio
     size_rules = preset_config.get("image_size", {})
     target_aspect = size_rules.get("target_aspect_ratio", 0.75) # 3/4
-    tolerance = size_rules.get("aspect_ratio_tolerance", 0.08)
-    min_w = size_rules.get("min_width", 600)
-    min_h = size_rules.get("min_height", 800)
+    tolerance = size_rules.get("aspect_ratio_tolerance", 0.12)
+    min_w = size_rules.get("min_width", 400)
+    min_h = size_rules.get("min_height", 500)
     
     current_aspect = width / float(height)
     aspect_diff = abs(current_aspect - target_aspect)
@@ -52,16 +52,16 @@ def preprocess_image(file_bytes: bytes, preset_config: dict) -> Tuple[np.ndarray
     # Tạo thông báo giải thích nếu có lỗi
     messages = []
     if not res_passed:
-        messages.append(f"Độ phân giải {width}x{height} chưa đạt tối thiểu quy ước ({min_w}x{min_h}).")
+        messages.append(f"Độ phân giải {width}x{height} px hơi nhỏ (khuyến nghị tối thiểu {min_w}x{min_h} px).")
     if not aspect_passed:
-        messages.append(f"Tỉ lệ khung hình {current_aspect:.2f} chưa khớp chuẩn 3:4 ({target_aspect:.2f} ± {tolerance}).")
+        messages.append(f"Tỉ lệ khung hình {current_aspect:.2f} chưa khớp khung ảnh thẻ chuẩn (3:4 hoặc 4:6).")
         
     metrics = {
         "passed": size_passed,
         "width": int(width),
         "height": int(height),
         "aspect_ratio": round(current_aspect, 3),
-        "aspect_ratio_target": "3:4 (0.75)",
+        "aspect_ratio_target": "3:4 hoặc 4:6",
         "min_resolution": f"{min_w}x{min_h}",
         "resolution_passed": res_passed,
         "aspect_passed": aspect_passed,

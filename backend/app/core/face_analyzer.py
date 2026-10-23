@@ -66,7 +66,7 @@ def analyze_face(image_bgr: np.ndarray, image_gray: np.ndarray, preset_config: d
     size_message = ""
     
     ratio_rules = preset_config.get("face_height_ratio", {})
-    min_ratio = ratio_rules.get("min_ratio", 0.45)
+    min_ratio = ratio_rules.get("min_ratio", 0.30)
     max_ratio = ratio_rules.get("max_ratio", 0.70)
     
     for (x, y, w, h) in faces:

@@ -31,87 +31,128 @@ def evaluate_photo(
     current_score = 0
     
     # ────────────────────────────────────────────────────────────────────────────
-    # 1. TIÊU CHÍ KÍCH THƯỚC & TỈ LỆ KHUNG HÌNH (Chương 1)
+    # 1. TIÊU CHÍ KÍCH THƯỚC & TỈ LỆ KHUNG HÌNH (Chương 1) - TỐI ĐA 15 ĐIỂM
     # ────────────────────────────────────────────────────────────────────────────
     size_passed = preproc_metrics.get("passed", False)
     w = preproc_metrics.get("width", 0)
     h = preproc_metrics.get("height", 0)
     asp = preproc_metrics.get("aspect_ratio", 0.0)
-    if size_passed:
-        current_score += SCORING_WEIGHTS["image_size"]
-        good_points.append(
-            f"Kích thước & Tỉ lệ chuẩn ({w}x{h} px): Ảnh đạt đúng tỷ lệ chuẩn 3:4 ({asp:.3f}) và độ phân giải rõ nét, đảm bảo chất lượng in ấn ảnh thẻ."
-        )
-    else:
-        if not preproc_metrics.get("resolution_passed", False):
-            if w < 400 or h < 500:
-                reasons.append(f"Độ phân giải rất thấp ({w}x{h} px) – ảnh quá nhỏ, mật độ điểm ảnh không đủ để in ấn rõ nét (chuẩn tối thiểu 600x800 px).")
-                recommendations.append("Sử dụng camera có độ phân giải gốc cao hơn hoặc gửi file gốc chất lượng cao (tránh gửi qua mạng xã hội bị nén mờ).")
-            else:
-                reasons.append(f"Độ phân giải hơi nhỏ ({w}x{h} px) – chưa đạt mức khuyến nghị 600x800 px để đảm bảo độ mịn khi in ảnh thẻ.")
-                recommendations.append("Chụp với độ phân giải lớn hơn hoặc sử dụng ảnh gốc chưa qua nén giảm kích thước (hoặc dùng ảnh đề xuất chuẩn hóa của PhotoCheck).")
+    aspect_passed = preproc_metrics.get("aspect_passed", False)
+    res_passed = preproc_metrics.get("resolution_passed", False)
+    preproc_metrics["score_max"] = SCORING_WEIGHTS["image_size"]
 
-        if not preproc_metrics.get("aspect_passed", False):
-            target_asp = preproc_metrics.get("target_aspect_ratio", 0.75)
-            if abs(asp - target_asp) <= 0.06:
-                reasons.append(f"Tỉ lệ khung hình hơi lệch nhẹ ({asp:.3f} thay vì 0.750) – ảnh hơi vuông hoặc hơi hẹp hơn so với chuẩn 3:4.")
-                recommendations.append("Cắt cúp (crop) nhẹ lại 2 bên mép ảnh theo đúng khung chuẩn 3:4 (hoặc chọn ảnh đề xuất đã chuẩn hóa của PhotoCheck).")
-            else:
-                reasons.append(f"Tỉ lệ khung hình sai lệch rõ rệt ({asp:.3f} so với chuẩn 3:4) – ảnh đang ở tỷ lệ khác (như 1:1 vuông, 16:9 màn hình rộng hoặc 9:16 dọc).")
-                recommendations.append("Cài đặt khung chụp ảnh thẻ tỷ lệ 3:4 trên ứng dụng camera điện thoại trước khi chụp.")
+    if size_passed:
+        preproc_metrics["score_earned"] = SCORING_WEIGHTS["image_size"]
+        current_score += SCORING_WEIGHTS["image_size"]
+        preproc_metrics["friendly_pass"] = f"Khung hình cân đối ({asp:.2f}), kích thước {w}×{h} px đạt chuẩn in ấn sắc nét."
+        good_points.append(
+            f"Kích thước & Tỉ lệ chuẩn ({w}x{h} px): Khung hình chuẩn tỷ lệ ảnh thẻ ({asp:.3f}) và độ phân giải rõ nét, đảm bảo chất lượng in ấn."
+        )
+    elif aspect_passed or res_passed:
+        # Thư thả: Đạt 1 trong 2 tiêu chí (ví dụ khung hình rất đẹp nhưng độ phân giải hơi nhỏ, hoặc ngược lại)
+        partial_score = 10
+        preproc_metrics["score_earned"] = partial_score
+        current_score += partial_score
+        if aspect_passed:
+            preproc_metrics["friendly_pass"] = f"Tỉ lệ khung hình rất chuẩn ({asp:.2f}), độ phân giải {w}×{h} px ở mức tạm chấp nhận (+10đ)."
+            good_points.append(f"Tỉ lệ khung hình cân đối ({asp:.2f}): Đúng khung ảnh thẻ chuẩn.")
+            reasons.append(f"Độ phân giải {w}x{h} px hơi nhỏ hơn mức khuyến nghị 600x800 px khi in kích thước lớn.")
+        else:
+            preproc_metrics["friendly_pass"] = f"Độ phân giải {w}×{h} px rất nét, tỉ lệ ({asp:.2f}) hơi lệch so với khung chuẩn (+10đ)."
+            good_points.append(f"Độ phân giải cao ({w}x{h} px): Ảnh sắc nét, chi tiết tốt.")
+            reasons.append(f"Tỉ lệ khung hình ({asp:.2f}) hơi lệch nhẹ so với khung chuẩn 3:4/4:6.")
+    else:
+        preproc_metrics["score_earned"] = 0
+        size_flaws = []
+        if not aspect_passed:
+            size_flaws.append(f"khung hình bị méo lệch ({asp:.2f} thay vì chuẩn 3:4/4:6)")
+        if not res_passed:
+            size_flaws.append(f"độ phân giải {w}×{h} px quá bé (dưới 400×500)")
+        preproc_metrics["friendly_fail"] = "Ảnh bị " + " và ".join(size_flaws) + "."
+        
+        if not res_passed:
+            reasons.append(f"Độ phân giải rất thấp ({w}x{h} px) – ảnh quá nhỏ, mật độ điểm ảnh không đủ để in ấn rõ nét (chuẩn tối thiểu 400x500 px).")
+            recommendations.append("Sử dụng camera có độ phân giải gốc cao hơn hoặc gửi file gốc chất lượng cao.")
+
+        if not aspect_passed:
+            reasons.append(f"Tỉ lệ khung hình sai lệch rõ rệt ({asp:.3f}) – ảnh đang ở tỷ lệ màn hình rộng hoặc vuông thay vì ảnh thẻ chân dung.")
+            recommendations.append("Cài đặt khung chụp ảnh thẻ tỷ lệ 3:4 hoặc 4:6 trên ứng dụng camera điện thoại trước khi chụp.")
 
     # ────────────────────────────────────────────────────────────────────────────
-    # 2. TIÊU CHÍ SỐ LƯỢNG KHUÔN MẶT (CRITICAL - Chương 7)
+    # 2. TIÊU CHÍ SỐ LƯỢNG KHUÔN MẶT (CRITICAL - Chương 7) - TỐI ĐA 25 ĐIỂM
     # ────────────────────────────────────────────────────────────────────────────
     face_count_data = face_metrics.get("face_count", {})
     face_count_passed = face_count_data.get("passed", False)
     detected_faces = face_count_data.get("detected_count", 0)
+    face_count_data["score_max"] = SCORING_WEIGHTS["face_count"]
+    face_count_data["score_earned"] = SCORING_WEIGHTS["face_count"] if face_count_passed else 0
     
     if face_count_passed:
         current_score += SCORING_WEIGHTS["face_count"]
+        face_count_data["friendly_pass"] = "Có duy nhất 1 người chụp, mắt nhìn thẳng vào ống kính máy ảnh."
         good_points.append(
             "Nhận diện chủ thể chuẩn xác: Phát hiện duy nhất 1 khuôn mặt trực diện rõ ràng, góc nhìn thẳng vào ống kính máy ảnh."
         )
     else:
         if detected_faces == 0:
+            face_count_data["friendly_fail"] = "Không phát hiện khuôn mặt rõ nét (mặt bị che khuất, quay nghiêng góc hoặc quá tối)."
             reasons.append("Không phát hiện được khuôn mặt trực diện rõ nét – khuôn mặt có thể bị che khuất, quay nghiêng góc quá lớn hoặc quá mờ tối.")
             recommendations.append("Đứng hoặc ngồi thẳng lưng, nhìn thẳng vào ống kính máy ảnh, vén tóc mái không để che mắt/lông mày và tháo khẩu trang.")
         else:
+            face_count_data["friendly_fail"] = f"Phát hiện {detected_faces} người trong ảnh (ảnh thẻ chỉ được phép chụp duy nhất 1 người)."
             reasons.append(f"Phát hiện {detected_faces} khuôn mặt trong khung hình – có người đứng lẫn vào hậu cảnh hoặc tranh ảnh hình người lọt vào bức ảnh.")
             recommendations.append("Đảm bảo khung hình chỉ có duy nhất một người chụp, căn góc máy để loại bỏ hoàn toàn người hoặc tranh ảnh phía sau.")
 
     # ────────────────────────────────────────────────────────────────────────────
-    # 3. TIÊU CHÍ TỶ LỆ CHIỀU CAO KHUÔN MẶT & VỊ TRÍ TRỤC (Chương 1 & ICAO)
+    # 3. TIÊU CHÍ TỶ LỆ CHIỀU CAO KHUÔN MẶT & VỊ TRÍ TRỤC (Chương 1 & ICAO) - TỐI ĐA 20 ĐIỂM
     # ────────────────────────────────────────────────────────────────────────────
     face_ratio_data = face_metrics.get("face_height_ratio", {})
-    face_ratio_passed = face_ratio_data.get("passed", False)
+    ratio_val = face_ratio_data.get("ratio", 0.0)
+    face_ratio_data["score_max"] = SCORING_WEIGHTS["face_height_ratio"]
     
-    if face_ratio_passed:
+    min_r = face_ratio_data.get("threshold_min", 0.30)
+    max_r = face_ratio_data.get("threshold_max", 0.70)
+    
+    if detected_faces == 1 and (min_r <= ratio_val <= max_r):
+        face_ratio_passed = True
+        face_ratio_data["passed"] = True
+        face_ratio_data["score_earned"] = SCORING_WEIGHTS["face_height_ratio"]
         current_score += SCORING_WEIGHTS["face_height_ratio"]
-        ratio_val = face_ratio_data.get("ratio", 0.0)
+        face_ratio_data["friendly_pass"] = f"Khuôn mặt chiếm {ratio_val*100:.1f}% chiều cao ảnh (chuẩn {min_r*100:.0f}% - {max_r*100:.0f}%), tỷ lệ đầu và vai cân đối chuẩn ICAO."
         good_points.append(
-            f"Bố cục chân dung chuẩn ICAO: Khuôn mặt chiếm {ratio_val*100:.1f}% chiều cao ảnh (nằm trong dải chuẩn 45% - 70%), tỷ lệ đầu và vai cân đối."
+            f"Bố cục chân dung chuẩn ICAO: Khuôn mặt chiếm {ratio_val*100:.1f}% chiều cao ảnh (nằm trong dải chuẩn {min_r*100:.0f}% - {max_r*100:.0f}%), tỷ lệ đầu và vai cân đối."
         )
+    elif detected_faces == 1 and (0.25 <= ratio_val < min_r or max_r < ratio_val <= 0.76):
+        # Thư thả: Lệch nhẹ khỏi dải chuẩn một chút (cho 12/20 điểm)
+        partial = 12
+        face_ratio_passed = True
+        face_ratio_data["passed"] = True
+        face_ratio_data["score_earned"] = partial
+        current_score += partial
+        if ratio_val < min_r:
+            face_ratio_data["friendly_pass"] = f"Khuôn mặt chiếm {ratio_val*100:.1f}% khung hình, hơi xa nhẹ nhưng vẫn nhìn rõ chân dung (+12đ)."
+            good_points.append(f"Khuôn mặt nhìn rõ nét ({ratio_val*100:.1f}% chiều cao ảnh).")
+            reasons.append(f"Khuôn mặt hơi nhỏ nhẹ so với khung chuẩn ({ratio_val*100:.1f}% thay vì tối thiểu {min_r*100:.0f}%).")
+        else:
+            face_ratio_data["friendly_pass"] = f"Khuôn mặt chiếm {ratio_val*100:.1f}% khung hình, hơi cận mặt nhẹ (+12đ)."
+            good_points.append(f"Khuôn mặt cận cảnh rõ ràng ({ratio_val*100:.1f}% chiều cao ảnh).")
+            reasons.append(f"Khuôn mặt hơi lớn ({ratio_val*100:.1f}% thay vì tối đa {max_r*100:.0f}%), chừa ít khoảng thở đỉnh đầu.")
     else:
+        face_ratio_passed = False
+        face_ratio_data["passed"] = False
+        face_ratio_data["score_earned"] = 0
+        if ratio_val < min_r:
+            face_ratio_data["friendly_fail"] = f"Người chụp đứng quá xa máy ảnh, mặt chỉ chiếm {ratio_val*100:.1f}% khung hình (yêu cầu từ {min_r*100:.0f}% - {max_r*100:.0f}%)."
+        else:
+            face_ratio_data["friendly_fail"] = f"Chụp quá sát camera, mặt chiếm {ratio_val*100:.1f}% khung hình quá lớn làm chật bức ảnh."
+
         if detected_faces == 1:
-            ratio_val = face_ratio_data.get("ratio", 0.0)
-            min_r = face_ratio_data.get("threshold_min", 0.45)
-            max_r = face_ratio_data.get("threshold_max", 0.70)
-            
             if ratio_val < min_r:
-                if ratio_val >= 0.38:
-                    reasons.append(f"Khuôn mặt hơi nhỏ so với khung hình (chiếm {ratio_val*100:.1f}% chiều cao ảnh, chuẩn từ 45% - 70%) – khoảng cách chụp hơi xa so với tiêu chuẩn ảnh thẻ.")
-                    recommendations.append("Đưa máy ảnh lại gần thêm khoảng 20 - 30cm (hoặc cắt cúp bớt phần thân dưới) để khuôn mặt to rõ chuẩn ảnh thẻ.")
-                else:
-                    reasons.append(f"Khuôn mặt quá nhỏ (chỉ chiếm {ratio_val*100:.1f}% chiều cao ảnh) – góc chụp quá rộng lấy nhiều phần thân dưới, không đúng bố cục chân dung ảnh thẻ.")
-                    recommendations.append("Di chuyển máy ảnh lại gần người chụp (khoảng cách tối ưu 1.2m - 1.5m), căn khung hình lấy từ giữa ngực lên đỉnh đầu.")
+                reasons.append(f"Khuôn mặt quá nhỏ (chỉ chiếm {ratio_val*100:.1f}% chiều cao ảnh) – góc chụp quá rộng lấy nhiều phần thân dưới, không đúng bố cục chân dung ảnh thẻ.")
+                recommendations.append("Di chuyển máy ảnh lại gần người chụp (khoảng cách tối ưu 1.2m - 1.5m), căn khung hình lấy từ giữa ngực lên đỉnh đầu.")
             elif ratio_val > max_r:
-                if ratio_val <= 0.78:
-                    reasons.append(f"Khuôn mặt hơi to / chụp hơi sát (chiếm {ratio_val*100:.1f}% chiều cao) – thiếu khoảng thở (headroom) phía trên đỉnh đầu và hai bên vai.")
-                    recommendations.append("Lùi máy ảnh ra xa khoảng 15 - 20cm để lấy trọn vẹn cả cổ, phần vai áo và chừa khoảng trống trên đỉnh đầu.")
-                else:
-                    reasons.append(f"Khuôn mặt quá lớn / chụp cận mặt quá mức (chiếm {ratio_val*100:.1f}% chiều cao) – đỉnh đầu hoặc cằm chạm sát mép ảnh gây mất cân đối.")
-                    recommendations.append("Lùi máy ảnh ra xa khoảng 40 - 50cm để lấy đúng bố cục chuẩn ảnh thẻ (khuôn mặt chiếm 50% - 60% khung hình).")
+                reasons.append(f"Khuôn mặt quá lớn / chụp cận mặt quá mức (chiếm {ratio_val*100:.1f}% chiều cao) – đỉnh đầu hoặc cằm chạm sát mép ảnh gây mất cân đối.")
+                recommendations.append("Lùi máy ảnh ra xa khoảng 30 - 40cm để lấy đúng bố cục chuẩn ảnh thẻ (khuôn mặt chiếm 40% - 60% khung hình).")
 
     # Kiểm tra thêm độ lệch tâm ngang nếu chỉ có 1 mặt
     if detected_faces == 1:
@@ -125,22 +166,30 @@ def evaluate_photo(
             good_points.append(f"Độ đối xứng chính tâm: Khuôn mặt căn ngay chính giữa khung hình (độ lệch chỉ {center_off*100:.1f}%), tư thế ngay ngắn chuẩn ảnh thẻ.")
 
     # ────────────────────────────────────────────────────────────────────────────
-    # 4. TIÊU CHÍ ĐỘ RÕ NÉT (Phương sai Laplacian - Chương 2)
+    # 4. TIÊU CHÍ ĐỘ RÕ NÉT (Phương sai Laplacian - Chương 2) - TỐI ĐA 15 ĐIỂM
     # ────────────────────────────────────────────────────────────────────────────
     sharp_data = quality_metrics.get("sharpness", {})
     sharp_passed = sharp_data.get("passed", False)
     lap_var = sharp_data.get("laplacian_variance", 0.0)
+    sharp_data["score_max"] = SCORING_WEIGHTS["sharpness"]
+
     if sharp_passed:
-        current_score += SCORING_WEIGHTS["sharpness"]
+        sharp_data["score_earned"] = SCORING_WEIGHTS["sharpness"]
+        sharp_data["friendly_pass"] = f"Ảnh rất sắc nét (Điểm nét {lap_var:.1f} >= 75), mắt và tóc rõ từng sợi."
         good_points.append(
             f"Độ rõ nét chi tiết cao: Phương sai Laplacian đạt {lap_var:.1f} (vượt chuẩn 75.0), các đường nét mắt, mũi, miệng và sợi tóc rất căng nét, không bị nhòe mờ hay out nét."
         )
+    elif lap_var >= 50.0:
+        partial = 8
+        sharp_data["score_earned"] = partial
+        sharp_data["friendly_pass"] = f"Ảnh độ nét ở mức tạm chấp nhận (Điểm nét {lap_var:.1f}/75, +8đ)."
+        good_points.append(f"Đường nét mắt và khuôn mặt vẫn nhận diện rõ ràng ({lap_var:.1f}/75).")
+        reasons.append(f"Ảnh hơi mờ nét nhẹ (Phương sai Laplacian {lap_var:.1f}/75) – đường nét quanh mắt, sống mũi và sợi tóc chưa đạt độ căng nét tối ưu.")
+        recommendations.append("Chạm trực tiếp ngón tay vào vùng mắt trên màn hình điện thoại để khóa lấy nét (AF Lock), lau sạch mặt kính camera bằng khăn vải mềm và giữ máy thật chắc khi bấm.")
     else:
-        min_lap = sharp_data.get("threshold_min", 75.0)
-        if lap_var >= 50.0:
-            reasons.append(f"Ảnh hơi mờ nét nhẹ (Phương sai Laplacian {lap_var:.1f}/75) – đường nét quanh mắt, sống mũi và sợi tóc chưa đạt độ căng nét tối ưu.")
-            recommendations.append("Chạm trực tiếp ngón tay vào vùng mắt trên màn hình điện thoại để khóa lấy nét (AF Lock), lau sạch mặt kính camera bằng khăn vải mềm và giữ máy thật chắc khi bấm.")
-        elif lap_var >= 20.0:
+        sharp_data["score_earned"] = 0
+        sharp_data["friendly_fail"] = f"Ảnh bị mờ nhòe do rung tay hoặc lấy nét sai (Điểm nét {lap_var:.1f} < tối thiểu 75)."
+        if lap_var >= 20.0:
             reasons.append(f"Ảnh bị mờ nhòe / out nét (Phương sai Laplacian {lap_var:.1f}/75) – ngũ quan bị mềm nét do rung tay khi chụp hoặc máy ảnh lấy nét sai vào hậu cảnh.")
             recommendations.append("Tựa chắc hai khủy tay vào người hoặc đặt điện thoại lên giá đỡ (tripod), bật chế độ hẹn giờ chụp 2 giây để tránh rung máy khi ngón tay bấm màn hình.")
         else:
@@ -148,7 +197,7 @@ def evaluate_photo(
             recommendations.append("Yêu cầu người chụp ngồi bất động, chụp ở nơi đủ sáng để camera đạt tốc độ chụp nhanh (tránh nhòe chuyển động) và cầm máy chống rung chắc chắn.")
 
     # ────────────────────────────────────────────────────────────────────────────
-    # 5. TIÊU CHÍ ĐỘ SÁNG & ĐỘ TƯƠNG PHẢN (Chương 2 & Chương 6)
+    # 5. TIÊU CHÍ ĐỘ SÁNG & ĐẶC TRƯNG TOÀN CỤC (Chương 2 & Chương 6) - TỐI ĐA 15 ĐIỂM
     # ────────────────────────────────────────────────────────────────────────────
     bright_data = quality_metrics.get("brightness", {})
     bright_passed = bright_data.get("passed", False)
@@ -158,23 +207,48 @@ def evaluate_photo(
     face_photo = bright_data.get("face_photometry", {})
     face_high_clip = face_photo.get("face_highlight_ratio", 0.0) * 100.0
     face_asym = face_photo.get("face_asymmetry", 0.0)
+    bhatta = bright_data.get("bhattacharyya_distance", 0.0)
+    bright_data["score_max"] = SCORING_WEIGHTS["brightness"]
 
     if bright_passed:
-        current_score += SCORING_WEIGHTS["brightness"]
+        bright_data["score_earned"] = SCORING_WEIGHTS["brightness"]
+        bright_data["friendly_pass"] = f"Ánh sáng hài hòa, khuôn mặt sáng đều, màu sắc khớp chuẩn (Độ lệch {bhatta:.2f} <= 0.50)."
         good_points.append(
             f"Ánh sáng & Phơi sáng hài hòa: Cường độ sáng trung bình {mean_b:.1f}/255 và độ tương phản {std_b:.1f} đạt chuẩn, biểu đồ sắc độ cân đối, không bị chói lóa hay tối sạm."
         )
+    elif (85.0 <= mean_b <= 215.0) and face_high_clip <= 5.0 and face_asym <= 30.0:
+        partial = 12
+        bright_data["score_earned"] = partial
+        bright_data["friendly_pass"] = f"Ánh sáng khuôn mặt khá rõ ràng ({mean_b:.1f}/255), phổ màu hơi lệch nhẹ so với mẫu chuẩn (+12đ)."
+        good_points.append(f"Khuôn mặt đủ sáng ({mean_b:.1f}/255), nhìn rõ ngũ quan.")
+        reasons.append(f"Phổ màu hoặc độ tương phản lệch nhẹ so với ảnh thẻ mẫu (Bhattacharyya {bhatta:.2f}).")
     else:
+        bright_data["score_earned"] = 0
+        if mean_b < 90.0:
+            bright_data["friendly_fail"] = f"Ảnh bị thiếu sáng / tối sạm (Độ sáng {mean_b:.1f} < 90), khuôn mặt bị tối om."
+        elif mean_b > 215.0 or high_clip > 10.0:
+            bright_data["friendly_fail"] = f"Ảnh bị cháy sáng hoặc lóa đèn flash (Độ sáng {mean_b:.1f} > 215 làm mất chi tiết da)."
+        elif bhatta > 0.50:
+            bright_data["friendly_fail"] = f"Phổ màu và ánh sáng lệch so với ảnh thẻ mẫu (Độ sai khác {bhatta:.2f} > 0.50)."
+        elif face_asym > 25.0:
+            bright_data["friendly_fail"] = f"Ánh sáng chiếu lệch một bên mặt (chênh lệch {face_asym:.1f} mức sáng)."
+        else:
+            bright_data["friendly_fail"] = "Ánh sáng phân bố chưa đồng đều hoặc bị bóng dầu trên khuôn mặt."
+
         min_m = bright_data.get("threshold_min_mean", 90.0)
         max_m = bright_data.get("threshold_max_mean", 210.0)
         
-        # 1. Chẩn đoán chói sáng / cháy sáng
-        if high_clip > 3.5 or mean_b > max_m:
-            if high_clip > 15.0 or mean_b > 225.0:
-                reasons.append(f"Ảnh bị cháy sáng nghiêm trọng (Độ sáng {mean_b:.1f}, {high_clip:.1f}% diện tích bị lóa trắng) – nguồn sáng cực mạnh rọi trực diện làm mất hoàn toàn chi tiết da và hậu cảnh.")
+        # 1. Chẩn đoán chói sáng / cháy sáng (dùng upper_clip để tránh nhầm áo sơ mi trắng phía dưới)
+        bg_type = bg_metrics.get("bg_type", "WHITE_BACKGROUND")
+        upper_clip = bright_data.get("upper_highlight_ratio", bright_data.get("highlight_clipping_ratio", 0.0)) * 100.0
+        is_bg_white = ("WHITE" in bg_type)
+        glare_detected = (upper_clip > 4.5 and not is_bg_white) or (mean_b > max_m)
+        if glare_detected:
+            if upper_clip > 15.0 or mean_b > 225.0:
+                reasons.append(f"Ảnh bị cháy sáng nghiêm trọng (Độ sáng {mean_b:.1f}, {upper_clip:.1f}% diện tích trên bị lóa trắng) – nguồn sáng cực mạnh rọi trực diện làm mất hoàn toàn chi tiết da và hậu cảnh.")
                 recommendations.append("Tắt đèn chiếu rọi trực diện hoặc tránh đứng sát bóng đèn/cửa sổ nắng gắt; hạ thanh phơi sáng camera xuống (-0.7 đến -1.0 EV).")
             else:
-                reasons.append(f"Ảnh bị chói sáng / cháy sáng cục bộ ({high_clip:.1f}% diện tích bị lóa trắng) – có nguồn sáng mạnh hoặc đèn rọi chiếu thẳng vào khung hình gây lóa mắt.")
+                reasons.append(f"Vùng trên khung hình bị chói lóa ánh đèn ({upper_clip:.1f}% diện tích bị lóa trắng) – có nguồn sáng mạnh hoặc đèn rọi chiếu thẳng vào khung hình gây lóa mắt.")
                 recommendations.append("Di chuyển góc chụp tránh nguồn sáng chói phía sau hoặc bên cạnh; để ánh sáng chiếu dịu đều từ phía trước mặt.")
         
         # 2. Chẩn đoán chói lóa trên khuôn mặt
@@ -202,27 +276,38 @@ def evaluate_photo(
             recommendations.append("Lau sạch ống kính camera bằng vải mềm (dấu vân tay bám trên kính thường gây hiện tượng lóa mờ sương), tránh để nguồn sáng rọi thẳng vào ống kính.")
 
     # ────────────────────────────────────────────────────────────────────────────
-    # 6. TIÊU CHÍ ĐỘ ĐỒNG NHẤT PHÔNG NỀN (Chương 3 & 4)
+    # 6. TIÊU CHÍ ĐỘ ĐỒNG NHẤT PHÔNG NỀN (Chương 3 & 4) - TỐI ĐA 10 ĐIỂM
     # ────────────────────────────────────────────────────────────────────────────
     bg_passed = bg_metrics.get("passed", False)
     bg_std = bg_metrics.get("avg_std_dev", 0.0)
     max_bg_std = bg_metrics.get("threshold_max_std", 1.5)
     bg_type = bg_metrics.get("bg_type", "WHITE_BACKGROUND")
     bg_name = "xanh dương" if "BLUE" in bg_type else ("trắng" if "WHITE" in bg_type else "chuẩn")
+    bg_metrics["score_max"] = SCORING_WEIGHTS["background_uniformity"]
+
+    is_bokeh = bg_metrics.get("is_bokeh_blur", False)
+    is_dark_murky = bg_metrics.get("is_dark_murky", False)
+    is_cluttered = bg_metrics.get("is_cluttered", False)
+    shadow_det = bg_metrics.get("shadow_detected", False)
+    h_diff = bg_metrics.get("horizontal_diff", 0.0)
+    v_diff = bg_metrics.get("vertical_diff", 0.0)
+    c_lum = bg_metrics.get("avg_corner_luminance", 255.0)
+
     if bg_passed:
-        current_score += SCORING_WEIGHTS["background_uniformity"]
+        bg_metrics["score_earned"] = SCORING_WEIGHTS["background_uniformity"]
+        bg_metrics["friendly_pass"] = f"Phông nền màu {bg_name} trơn phẳng, sạch bóng, không dính bóng đổ hay hoa văn."
         good_points.append(
             f"Phông nền đồng nhất & sạch bóng: Hậu cảnh màu {bg_name} trơn phẳng (độ lệch chuẩn 4 góc {bg_std:.2f} <= {max_bg_std:.1f}), không bị hắt bóng lưng và không lẫn hoa văn phức tạp."
         )
+    elif bg_std <= 5.5 and not is_bokeh and not is_cluttered:
+        partial = 8
+        bg_metrics["score_earned"] = partial
+        bg_metrics["friendly_pass"] = f"Phông nền màu {bg_name} trơn, hơi chênh sáng nhẹ giữa các góc (+8đ)."
+        good_points.append(f"Phông nền đúng tông màu {bg_name} cơ bản.")
+        reasons.append(f"Phông nền hơi chênh sáng giữa các góc (độ lệch chuẩn {bg_std:.2f} > {max_bg_std:.1f}).")
     else:
-        is_bokeh = bg_metrics.get("is_bokeh_blur", False)
-        is_dark_murky = bg_metrics.get("is_dark_murky", False)
-        is_cluttered = bg_metrics.get("is_cluttered", False)
-        shadow_det = bg_metrics.get("shadow_detected", False)
-        h_diff = bg_metrics.get("horizontal_diff", 0.0)
-        v_diff = bg_metrics.get("vertical_diff", 0.0)
-        c_lum = bg_metrics.get("avg_corner_luminance", 255.0)
-
+        bg_metrics["score_earned"] = 0
+        bg_metrics["friendly_fail"] = f"Phông nền bị loang lổ, có bóng đổ quanh vai hoặc dính vật thể phía sau (Độ biến thiên màu {bg_std:.1f} > {max_bg_std:.1f})."
         if is_bokeh:
             reasons.append(f"Phông nền bị xóa phông mờ (chụp chế độ chân dung / bokeh làm mờ cảnh phòng/ngoại cảnh, biến thiên màu {bg_std:.1f} > {max_bg_std:.1f}) – không phải phông trơn phẳng đồng nhất của ảnh thẻ.")
             recommendations.append("Tắt chế độ chụp chân dung (Portrait Mode) xóa phông trên điện thoại, chuyển sang chế độ thường ('Photo') và đứng trước một bức tường phẳng trơn 1 màu (trắng hoặc xanh dương).")
@@ -247,61 +332,67 @@ def evaluate_photo(
             reasons.append(f"Phông nền không đồng nhất (Độ lệch chuẩn 4 góc {bg_std:.2f} > {max_bg_std:.1f}) – màu sắc hậu cảnh chưa đạt độ đồng đều chuẩn ảnh thẻ.")
             recommendations.append("Chọn bức tường trơn phẳng đồng màu, chiếu sáng đều 4 góc hậu cảnh để tạo nền đồng nhất tuyệt đối.")
 
+
     # ────────────────────────────────────────────────────────────────────────────
-    # KẾT LUẬN TỔNG THỂ (VERDICT RULE - HỌC THUẬT & CHẶT CHẼ):
+    # KẾT LUẬN TỔNG THỂ (VERDICT RULE) - ĐỒNG BỘ 100% VỚI TỔNG ĐIỂM 6 TIÊU CHÍ:
     # ────────────────────────────────────────────────────────────────────────────
-    # Điều kiện tiên quyết để PASS (Đạt chuẩn):
-    # 1. Đúng 1 khuôn mặt hợp lệ (face_count_passed)
-    # 2. Ảnh phải rõ nét (sharpness_passed) - ảnh mờ/nhòe tuyệt đối không được PASS
-    # 3. Ánh sáng phải đạt chuẩn (bright_passed) - ảnh chói lóa / tối sạm tuyệt đối không được PASS
-    # 4. Điểm tổng thể >= 70
-    
-    critical_quality_passed = face_count_passed and sharp_passed and bright_passed
+    checks_dict = {
+        "image_size": preproc_metrics,
+        "face_count": face_count_data,
+        "face_height_ratio": face_ratio_data,
+        "sharpness": sharp_data,
+        "brightness": bright_data,
+        "background_uniformity": bg_metrics
+    }
+
+    # Tổng điểm số tuyệt đối bằng tổng điểm của 6 tiêu chuẩn, không cắt xén ngầm
+    total_score = sum(int(item.get("score_earned", 0)) for item in checks_dict.values())
+    total_score = max(0, min(100, total_score))
+
+    core_passed = face_count_passed and face_ratio_passed and sharp_passed and bright_passed and bg_passed
 
     if not face_count_passed:
         verdict = "FAIL"
-        summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({current_score}/100) do không phát hiện đúng 1 khuôn mặt trực diện hợp lệ."
-    elif not sharp_passed or not bright_passed:
-        # Nếu vi phạm chất lượng quang học cốt lõi (mờ nét hoặc chói lóa/tối sạm):
-        quality_fails = []
+        summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({total_score}/100) do không phát hiện đúng 1 khuôn mặt trực diện hợp lệ (bắt buộc đúng 1 người)."
+    elif not core_passed:
+        # Nếu có tiêu chí cốt lõi chưa đạt (mờ, phông bẩn, sai sáng, hoặc mặt quá nhỏ):
+        # Ảnh được chấm điểm trung thực theo đúng 6 tiêu chuẩn, và nếu >= 50 điểm sẽ xếp loại TẠM ĐẠT
+        fail_list = []
         if not sharp_passed:
-            quality_fails.append("ảnh bị mờ/nhòe")
+            fail_list.append("ảnh bị mờ/nhòe")
         if not bright_passed:
-            quality_fails.append("ánh sáng chưa đạt chuẩn (bị chói lóa hoặc thiếu sáng)")
-        fail_desc = " và ".join(quality_fails)
-        
-        if current_score >= 45:
+            fail_list.append("ánh sáng/màu sắc chưa chuẩn")
+        if not bg_passed:
+            fail_list.append("phông nền chưa đồng nhất")
+        if not face_ratio_passed:
+            fail_list.append("tỉ lệ khuôn mặt chưa vừa vặn")
+        fail_desc = ", ".join(fail_list) if fail_list else "một số tiêu chuẩn"
+
+        if total_score >= 50:
             verdict = "WARNING"
-            summary = f"Ảnh thẻ CẦN CHỤP LẠI ({current_score}/100) – Dù đạt bố cục nhưng chất lượng quang học chưa đạt yêu cầu ({fail_desc})."
+            summary = f"Ảnh thẻ TẠM ĐẠT / CẦN CẢI THIỆN ({total_score}/100) – Tổng điểm đạt {total_score}đ (đạt yêu cầu từ 50 trở lên), tuy nhiên còn lỗi {fail_desc}, cần chụp lại để đạt chuẩn in ấn tối ưu."
         else:
             verdict = "FAIL"
-            summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({current_score}/100) do vi phạm nhiều tiêu chí chất lượng kỹ thuật ({fail_desc})."
-    elif current_score >= 70 and critical_quality_passed:
+            summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({total_score}/100) do vi phạm tiêu chuẩn kỹ thuật ({fail_desc}) và chưa đạt ngưỡng điểm 50."
+    elif total_score >= 50:
         verdict = "PASS"
         if len(reasons) == 0:
-            summary = f"Ảnh thẻ ĐẠT TIÊU CHUẨN xuất sắc ({current_score}/100) – Thỏa mãn toàn diện các yêu cầu kỹ thuật và bố cục ảnh thẻ."
+            summary = f"Ảnh thẻ ĐẠT TIÊU CHUẨN xuất sắc ({total_score}/100) – Thỏa mãn toàn diện 6 tiêu chuẩn kỹ thuật ảnh thẻ."
         else:
-            summary = f"Ảnh thẻ ĐẠT TIÊU CHUẨN ({current_score}/100) – Đạt các tiêu chuẩn chất lượng quang học quan trọng."
-    elif current_score >= 40:
+            summary = f"Ảnh thẻ ĐẠT TIÊU CHUẨN ({total_score}/100) – Đạt điểm yêu cầu từ 50 trở lên ({len(good_points)} tiêu chí tốt)."
+    elif total_score >= 35:
         verdict = "WARNING"
-        summary = f"Ảnh thẻ TẠM ĐẠT CHUẨN ({current_score}/100) – Đạt {len(good_points)} tiêu chí tốt, có {len(reasons)} điểm cần cải thiện để đạt chất lượng in ấn tối ưu."
+        summary = f"Ảnh thẻ TẠM ĐẠT CHUẨN ({total_score}/100) – Chưa đạt ngưỡng đạt 50 điểm (được {total_score}/100), cần khắc phục {len(reasons)} điểm hạn chế."
     else:
         verdict = "FAIL"
-        summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({current_score}/100) do có {len(reasons)} tiêu chí chưa thỏa mãn."
-        
+        summary = f"Ảnh thẻ KHÔNG ĐẠT tiêu chuẩn ({total_score}/100) do chưa đạt ngưỡng điểm tối thiểu 50."
+
     return {
         "verdict": verdict,
-        "overall_score": int(current_score),
+        "overall_score": total_score,
         "summary": summary,
         "good_points": good_points,
         "reasons": reasons,
         "recommendations": recommendations,
-        "checks": {
-            "image_size": preproc_metrics,
-            "face_count": face_count_data,
-            "face_height_ratio": face_ratio_data,
-            "sharpness": sharp_data,
-            "brightness": bright_data,
-            "background_uniformity": bg_metrics
-        }
+        "checks": checks_dict
     }

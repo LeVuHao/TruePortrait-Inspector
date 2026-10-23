@@ -16,7 +16,6 @@ import {
   RotateCcw,
   Sparkles,
   Lightbulb,
-  Wand2,
   Download,
   Video,
   VideoOff,
@@ -176,14 +175,8 @@ export default function App() {
         return result.visual_assets.face_bbox || previewUrl;
       case 'clahe_enhanced':
         return result.visual_assets.clahe_enhanced || previewUrl;
-      case 'standardized':
-        return result.visual_assets.standardized || previewUrl;
       case 'grayscale':
         return result.visual_assets.grayscale || previewUrl;
-      case 'laplacian_map':
-        return result.visual_assets.laplacian_map || previewUrl;
-      case 'background_rois':
-        return result.visual_assets.background_rois || previewUrl;
       default:
         return previewUrl;
     }
@@ -206,7 +199,7 @@ export default function App() {
         <div className="header-controls">
           <div className="preset-badge">
             <Square size={14} />
-            <span>Preset: STANDARD_ID_PHOTO (3:4, Min 600x800)</span>
+            <span>Preset: STANDARD_ID_PHOTO (3:4 & 4:6, Min 400x500)</span>
           </div>
         </div>
       </header>
@@ -278,33 +271,15 @@ export default function App() {
                   <button 
                     className={`tab-btn ${activeTab === 'clahe_enhanced' ? 'active' : ''}`}
                     onClick={() => setActiveTab('clahe_enhanced')}
-                    style={{ borderColor: activeTab === 'clahe_enhanced' ? '#f59e0b' : 'rgba(245,158,11,0.3)', color: activeTab === 'clahe_enhanced' ? '#fff' : '#fbbf24' }}
+                    style={{ borderColor: activeTab === 'clahe_enhanced' ? '#10b981' : 'rgba(16,185,129,0.3)', color: activeTab === 'clahe_enhanced' ? '#fff' : '#34d399' }}
                   >
-                    <Sparkles size={14} /> Cân bằng CLAHE
-                  </button>
-                  <button 
-                    className={`tab-btn tab-standardized ${activeTab === 'standardized' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('standardized')}
-                  >
-                    <Wand2 size={14} /> Chuẩn hóa DIP (3:4)
+                    <Sparkles size={14} /> Làm mịn & Tăng nét DIP
                   </button>
                   <button 
                     className={`tab-btn ${activeTab === 'grayscale' ? 'active' : ''}`}
                     onClick={() => setActiveTab('grayscale')}
                   >
                     Ảnh xám
-                  </button>
-                  <button 
-                    className={`tab-btn ${activeTab === 'laplacian_map' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('laplacian_map')}
-                  >
-                    <Zap size={14} /> Viền Laplacian
-                  </button>
-                  <button 
-                    className={`tab-btn ${activeTab === 'background_rois' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('background_rois')}
-                  >
-                    <Maximize2 size={14} /> 4 Góc ROI
                   </button>
                 </div>
 
@@ -324,31 +299,15 @@ export default function App() {
                   )}
                 </div>
 
-                {/* Chú thích Ảnh đề xuất khi đang xem tab standardized */}
-                {activeTab === 'standardized' && (
-                  <div className="standardized-banner">
-                    <div className="std-banner-info">
-                      <Wand2 size={16} />
-                      <span>
-                        Ảnh đề xuất hiệu chỉnh: Tỷ lệ 3:4 ({result?.standardization_report?.standardized_width}x{result?.standardization_report?.standardized_height} px) theo đúng lỗi thực tế của ảnh (không can thiệp thừa).
-                      </span>
-                    </div>
-                    <div className="std-banner-actions">
-                      <button className="btn-std-download" onClick={handleDownloadStandardized}>
-                        <Download size={13} /> Tải ảnh đề xuất (JPG)
-                      </button>
-                    </div>
-                  </div>
-                )}
 
 
-                {/* Chú thích CLAHE khi đang xem tab CLAHE */}
+                {/* Chú thích khi xem tab Làm mịn & Tăng nét DIP */}
                 {activeTab === 'clahe_enhanced' && (
-                  <div className="clahe-banner">
-                    <span>✨ Ảnh đã được tự động cân bằng sáng bằng thuật toán CLAHE trên không gian màu CIELAB.</span>
+                  <div className="clahe-banner" style={{ background: 'rgba(16,185,129,0.12)', borderColor: 'rgba(16,185,129,0.35)', color: '#6ee7b7' }}>
+                    <span>✨ Đã áp dụng bộ lọc song phương Bilateral Filter (làm mịn da bảo toàn biên) kết hợp Unsharp Masking (làm nét chi tiết mắt, tóc) chuẩn giáo trình XLA.</span>
                     <button 
                       className="tab-btn" 
-                      style={{ padding: '4px 8px', fontSize: '0.75rem', background: '#f59e0b', color: '#000' }}
+                      style={{ padding: '4px 8px', fontSize: '0.75rem', background: '#10b981', color: '#000', fontWeight: 600 }}
                       onClick={() => setActiveTab('original')}
                     >
                       So với ảnh gốc
@@ -357,31 +316,31 @@ export default function App() {
                 )}
 
 
-                {/* Re-upload button */}
-                <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                {/* Re-upload button & Resolution */}
+                <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     <button 
                       className="tab-btn" 
-                      style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)' }}
+                      style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)', padding: '5px 10px', fontSize: '0.78rem' }}
                       onClick={() => {
                         setPreviewUrl(null);
                         setResult(null);
                         setSelectedFile(null);
                       }}
                     >
-                      <RotateCcw size={14} /> Tải ảnh khác
+                      <RotateCcw size={13} /> Tải ảnh khác
                     </button>
                     <button
                       className="tab-btn"
-                      style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', borderColor: 'rgba(139,92,246,0.4)' }}
+                      style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', borderColor: 'rgba(139,92,246,0.4)', padding: '5px 10px', fontSize: '0.78rem' }}
                       onClick={() => { setPreviewUrl(null); setResult(null); setSelectedFile(null); setTimeout(openCamera, 50); }}
                     >
-                      <Camera size={14} /> Chụp lại webcam
+                      <Camera size={13} /> Chụp webcam
                     </button>
                   </div>
                   {result && (
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      Độ phân giải: {result.checks.image_size.width}x{result.checks.image_size.height} px
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                      Độ phân giải: <strong style={{ color: '#e2e8f0' }}>{result.checks.image_size.width}×{result.checks.image_size.height}</strong> px
                     </span>
                   )}
                 </div>
@@ -390,44 +349,44 @@ export default function App() {
                 {result?.checks?.brightness && (
                   <div className="global-lab-card">
                     <div className="global-lab-header">
-                      <div className="global-lab-title">
-                        <BarChart2 size={16} /> Chuyên đề: Trích xuất Đặc trưng Toàn cục (Global Features Lab)
+                      <div className="global-lab-title" style={{ fontSize: '0.84rem' }}>
+                        <BarChart2 size={16} /> Đặc trưng Toàn cục (Global Lab)
                       </div>
-                      <span className="crit-val-badge" style={{ color: '#60a5fa', borderColor: 'rgba(96,165,250,0.3)' }}>
-                        Vector 18-D (Ch.6 DIP)
+                      <span className="crit-val-badge" style={{ color: '#60a5fa', borderColor: 'rgba(96,165,250,0.3)', whiteSpace: 'nowrap' }}>
+                        Vector 18-D (Ch.6)
                       </span>
                     </div>
 
                     {/* 4 Cards chỉ số — viết theo ngôn ngữ dễ hiểu */}
                     <div className="global-metrics-grid">
                       <div className="global-metric-box">
-                        <div className="global-metric-label">🌤️ Độ sáng trung bình</div>
+                        <div className="global-metric-label">🌤️ Độ sáng TB</div>
                         <div className="global-metric-val">{result.checks.brightness.mean_intensity}</div>
                         <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                          {result.checks.brightness.mean_intensity < 90 ? '⚠ Ảnh hơi tối' : result.checks.brightness.mean_intensity > 215 ? '⚠ Ảnh quá sáng' : '✓ Sáng vừa phải'}
+                          {result.checks.brightness.mean_intensity < 90 ? '⚠ Hơi tối' : result.checks.brightness.mean_intensity > 215 ? '⚠ Quá sáng' : '✓ Vừa phải'}
                         </div>
                       </div>
                       <div className="global-metric-box">
-                        <div className="global-metric-label">🎨 Độ tương phản màu</div>
+                        <div className="global-metric-label">🎨 Độ tương phản</div>
                         <div className="global-metric-val">{result.checks.brightness.contrast_std}</div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>Màu sắc đa dạng hay đơn điệu</div>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>Độ phong phú màu</div>
                       </div>
                       <div className="global-metric-box">
-                        <div className="global-metric-label">⚖️ Sáng lệch về phía</div>
+                        <div className="global-metric-label">⚖️ Lệch sáng</div>
                         <div className="global-metric-val" style={{ color: result.checks.brightness.skewness < 0 ? '#60a5fa' : '#f87171' }}>
                           {result.checks.brightness.skewness > 0 ? `+${result.checks.brightness.skewness}` : result.checks.brightness.skewness}
                         </div>
                         <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                          {result.checks.brightness.skewness < -0.5 ? '← Lệch về vùng tối' : result.checks.brightness.skewness > 0.5 ? '→ Lệch về vùng sáng' : '≈ Cân bằng'}
+                          {result.checks.brightness.skewness > 0.5 ? '← Vùng tối' : result.checks.brightness.skewness < -0.5 ? '→ Vùng sáng' : '≈ Cân bằng'}
                         </div>
                       </div>
-                      <div className="global-metric-box" style={{ borderColor: result.checks.brightness.bhattacharyya_distance < 0.45 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)' }}>
-                        <div className="global-metric-label">🎯 Phổ màu khớp chuẩn?</div>
-                        <div className="global-metric-val" style={{ color: result.checks.brightness.bhattacharyya_distance < 0.45 ? 'var(--success)' : 'var(--danger)' }}>
+                      <div className="global-metric-box" style={{ borderColor: result.checks.brightness.bhattacharyya_distance <= 0.50 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)' }}>
+                        <div className="global-metric-label">🎯 Khớp phổ chuẩn</div>
+                        <div className="global-metric-val" style={{ color: result.checks.brightness.bhattacharyya_distance <= 0.50 ? 'var(--success)' : 'var(--danger)' }}>
                           {result.checks.brightness.bhattacharyya_distance}
                         </div>
                         <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                          {result.checks.brightness.bhattacharyya_distance < 0.45 ? '✓ Rất giống ảnh chuẩn' : '✗ Khác nhiều so với chuẩn'}
+                          {result.checks.brightness.bhattacharyya_distance <= 0.50 ? '✓ Khớp chuẩn' : '✗ Lệch chuẩn'}
                         </div>
                       </div>
                     </div>
@@ -437,8 +396,8 @@ export default function App() {
                       <div className="dual-hist-wrapper">
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
                           <span>Biểu đồ màu sắc — ảnh bạn (xanh) vs ảnh thẻ chuẩn (vàng):</span>
-                          <span style={{ color: result.checks.brightness.bhattacharyya_distance < 0.45 ? '#34d399' : '#f87171' }}>
-                            {result.checks.brightness.bhattacharyya_distance < 0.45 ? '✓ Màu sắc rất khớp chuẩn' : '⚠ Màu sắc lệch nhiều so với chuẩn'}
+                          <span style={{ color: result.checks.brightness.bhattacharyya_distance <= 0.50 ? '#34d399' : '#f87171' }}>
+                            {result.checks.brightness.bhattacharyya_distance <= 0.50 ? '✓ Màu sắc rất khớp chuẩn' : '⚠ Màu sắc lệch nhiều so với chuẩn'}
                           </span>
                         </div>
                         <div className="dual-hist-container">
@@ -524,244 +483,293 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* KHỐI XUẤT ẢNH CHUẨN HÓA DIP (AUTO-STANDARDIZER ACTION CARD) */}
+                {/* NÚT TẢI ẢNH ĐỀ XUẤT CHUẨN 3:4 (JPG) */}
                 {result?.visual_assets?.standardized && (
-                  <div className="auto-standardize-card">
-                    <div className="std-card-header">
-                      <div className="std-header-left">
-                        <div className="std-badge-icon">
-                          <Wand2 size={18} />
-                        </div>
-                        <div>
-                          <div className="std-card-title">Ảnh Đề Xuất Hiệu Chỉnh (Targeted DIP Fix)</div>
-                          <div className="std-card-sub">Tự động sửa đúng lỗi: giảm chói, nâng sáng hoặc căn lại khung 3:4</div>
-                        </div>
-                      </div>
-                      <span className="std-pill">Adaptive Fix</span>
-                    </div>
-
-                    {/* 4 Chỉ số chuẩn hóa */}
-                    <div className="std-highlights-grid">
-                      <div className="std-hl-item">
-                        <div className="std-hl-label">Bố cục & Kích thước</div>
-                        <div className="std-hl-val">3:4 ({result.standardization_report?.standardized_width}x{result.standardization_report?.standardized_height} px)</div>
-                      </div>
-                      <div className="std-hl-item">
-                        <div className="std-hl-label">Tỷ lệ mặt (Face)</div>
-                        <div className="std-hl-val">~54% (Chuẩn ICAO)</div>
-                      </div>
-                      <div className="std-hl-item">
-                        <div className="std-hl-label">Cân bằng sáng</div>
-                        <div className="std-hl-val">Thích nghi theo lỗi</div>
-                      </div>
-                      <div className="std-hl-item">
-                        <div className="std-hl-label">Độ nét chi tiết</div>
-                        <div className="std-hl-val">Bảo toàn tự nhiên</div>
-                      </div>
-                    </div>
-
-                    {/* Nút hành động chính */}
-                    <div className="std-card-actions">
-                      <button 
-                        className="btn-std-primary" 
-                        onClick={handleDownloadStandardized}
-                        title="Tải ảnh đã hiệu chỉnh theo đúng tiêu chuẩn về máy tính"
-                      >
-                        <Download size={15} /> Tải ảnh đề xuất (JPG)
-                      </button>
-                      <button 
-                        className="btn-std-secondary" 
-                        onClick={() => setActiveTab('standardized')}
-                        title="Chuyển sang xem ảnh đề xuất trên Canvas"
-                      >
-                        <Wand2 size={15} /> Xem trên Canvas
-                      </button>
-                    </div>
-
-                    {/* Nhận xét sơ qua về khung ảnh & bố cục */}
-                    <div className="std-overview-box">
-                      <div className="std-overview-title">
-                        <Camera size={15} /> Nhận xét sơ bộ về khung ảnh:
-                      </div>
-                      <div className="std-overview-points">
-                        {result?.standardization_report?.framing_notes && result.standardization_report.framing_notes.length > 0 ? (
-                          result.standardization_report.framing_notes.map((note, i) => (
-                            <div key={i} className="std-point-row">
-                              <span className="std-point-dot">●</span>
-                              <span>{note}</span>
-                            </div>
-                          ))
-                        ) : (
-                          <>
-                            <div className="std-point-row">
-                              <span className="std-point-dot">●</span>
-                              <span>Khung hình đã được căn chỉnh theo chuẩn tỷ lệ 3:4 ({result.standardization_report?.standardized_width}x{result.standardization_report?.standardized_height} px), khuôn mặt nằm ở vị trí trung tâm ngay ngắn.</span>
-                            </div>
-                            <div className="std-point-row">
-                              <span className="std-point-dot">●</span>
-                              <span>Tỷ lệ chiều cao khuôn mặt chiếm ~54% khung hình, khoảng thở đỉnh đầu và hai bên vai cân đối chuẩn ảnh thẻ ICAO.</span>
-                            </div>
-                            <div className="std-point-row">
-                              <span className="std-point-dot">●</span>
-                              <span>Màu sắc và ánh sáng tổng thể được bảo toàn tự nhiên, sẵn sàng in ấn hoặc dán hồ sơ.</span>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <button 
+                      className="btn-std-primary" 
+                      onClick={handleDownloadStandardized}
+                      style={{
+                        width: '100%',
+                        padding: '12px 18px',
+                        fontSize: '0.92rem',
+                        fontWeight: 700,
+                        borderRadius: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        cursor: 'pointer'
+                      }}
+                      title="Tải ảnh thẻ đã được tự động chuẩn hóa tỷ lệ 3:4 (JPG) về máy tính"
+                    >
+                      <Download size={17} /> Tải ảnh đề xuất chuẩn 3:4 (JPG)
+                    </button>
                   </div>
                 )}
 
-                {/* Danh sách 6 tiêu chí chi tiết */}
-                <h4 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', marginBottom: '10px' }}>
-                  Chi tiết 6 tiêu chuẩn kiểm định (DIP Rules):
-                </h4>
+                {/* BẢNG CHẤM ĐIỂM CHI TIẾT 6 TIÊU CHUẨN (BỐ CỤC GỐC) */}
+                <div className="criteria-summary-box">
+                  <div className="criteria-summary-header">
+                    <div className="criteria-main-title">
+                      📊 BẢNG CHẤM ĐIỂM 6 TIÊU CHUẨN (THANG 100 ĐIỂM)
+                    </div>
+                    <span 
+                      className="criteria-score-pill" 
+                      style={{
+                        background: result.overall_score >= 50 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                        color: result.overall_score >= 50 ? '#34d399' : '#f87171',
+                        borderColor: result.overall_score >= 50 ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'
+                      }}
+                    >
+                      Tổng: {result.overall_score} / 100 điểm ({result.overall_score >= 50 ? 'ĐẠT CHUẨN PASS' : 'CHƯA ĐẠT'})
+                    </span>
+                  </div>
+                  <div className="score-formula-hint">
+                    💡 <strong>Cách tính điểm:</strong> Kích thước (15đ) + Số người (15đ) + Tỉ lệ mặt (20đ) + Độ nét (15đ) + Ánh sáng (20đ) + Phông nền (15đ) = 100đ. Đạt từ 50đ trở lên là ĐẠT CHUẨN.
+                  </div>
+                </div>
 
                 <div className="criteria-list">
                   
-                  {/* 1. Kích thước & Tỉ lệ */}
-                  <div className="criterion-item">
-                    <div className="crit-left">
-                      <div className={`crit-status-icon ${result.checks.image_size.passed ? 'pass' : 'fail'}`}>
-                        {result.checks.image_size.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-                      </div>
-                      <div>
-                        <div className="crit-title">1. 📐 Kích thước & Tỉ lệ ảnh</div>
-                        <div className="crit-desc">{result.checks.image_size.message}</div>
-                      </div>
-                    </div>
-                    <div className="crit-val-badge" title="Chiều rộng x Chiều cao và tỉ lệ">
-                      {result.checks.image_size.width}×{result.checks.image_size.height} px
-                    </div>
-                  </div>
-
-                  {/* 2. Số lượng khuôn mặt */}
-                  <div className="criterion-item">
-                    <div className="crit-left">
-                      <div className={`crit-status-icon ${result.checks.face_count.passed ? 'pass' : 'fail'}`}>
-                        {result.checks.face_count.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-                      </div>
-                      <div>
-                        <div className="crit-title">2. 👤 Số người trong ảnh</div>
-                        <div className="crit-desc">{result.checks.face_count.message}</div>
-                      </div>
-                    </div>
-                    <div className="crit-val-badge">
-                      Phát hiện {result.checks.face_count.detected_count} người (yêu cầu: {result.checks.face_count.required_count})
-                    </div>
-                  </div>
-
-                  {/* 3. Tỷ lệ chiều cao khuôn mặt */}
-                  <div className="criterion-item">
-                    <div className="crit-left">
-                      <div className={`crit-status-icon ${result.checks.face_height_ratio.passed ? 'pass' : 'fail'}`}>
-                        {result.checks.face_height_ratio.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-                      </div>
-                      <div>
-                        <div className="crit-title">3. 🔍 Khuôn mặt chiếm bao nhiêu ảnh?</div>
-                        <div className="crit-desc">{result.checks.face_height_ratio.message}</div>
-                      </div>
-                    </div>
-                    <div className="crit-val-badge" title="Tỉ lệ chiều cao mặt/chiều cao ảnh">
-                      Mặt chiếm {(result.checks.face_height_ratio.ratio * 100).toFixed(1)}% ảnh (yêu cầu {result.checks.face_height_ratio.threshold_min * 100}%–{result.checks.face_height_ratio.threshold_max * 100}%)
-                    </div>
-                  </div>
-
-                  {/* 4. Độ rõ nét (Sharpness / Laplacian) */}
-                  <div className="criterion-item">
-                    <div className="crit-left">
-                      <div className={`crit-status-icon ${result.checks.sharpness.passed ? 'pass' : 'fail'}`}>
-                        {result.checks.sharpness.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-                      </div>
-                      <div>
-                        <div className="crit-title">4. 🔎 Ảnh có rõ nét không?</div>
-                        <div className="crit-desc">{result.checks.sharpness.message}</div>
-                      </div>
-                    </div>
-                    <div className="crit-val-badge" title="Điểm nét càng cao càng rõ. Dưới ngưỡng tối thiểu = ảnh mờ">
-                      Điểm nét: {result.checks.sharpness.laplacian_variance} / min {result.checks.sharpness.threshold_min}
-                    </div>
-                  </div>
-
-                  {/* 5. Đặc trưng Toàn cục (Global Photometric & Optical Quality) */}
-                  <div className="criterion-item" style={{ borderColor: result.checks.brightness.passed ? 'rgba(59,130,246,0.4)' : 'rgba(239,68,68,0.4)', background: 'rgba(59,130,246,0.06)' }}>
-                    <div className="crit-left">
-                      <div className={`crit-status-icon ${result.checks.brightness.passed ? 'pass' : 'fail'}`}>
-                        {result.checks.brightness.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-                      </div>
-                      <div>
-                        <div className="crit-title" style={{ color: '#93c5fd' }}>
-                          ★ 5. ☀️ Ánh sáng & Màu sắc tổng thể
+                  {/* 1. Kích thước & Tỉ lệ (15đ) */}
+                  <div className={`criterion-item ${(result.checks.image_size.score_earned > 0) ? 'pass-item' : 'fail-item'}`}>
+                    <div className="crit-item-top">
+                      <div className="crit-left">
+                        <div className={`crit-status-icon ${(result.checks.image_size.score_earned > 0) ? 'pass' : 'fail'}`}>
+                          {(result.checks.image_size.score_earned > 0) ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                         </div>
-                        <div className="crit-desc">{result.checks.brightness.message}</div>
+                        <div className="crit-title">1. 📐 Kích thước & Tỉ lệ</div>
+                      </div>
+                      <div className={`crit-score-badge ${(result.checks.image_size.score_earned > 0) ? 'pass' : 'fail'}`}>
+                        {(result.checks.image_size.score_earned > 0) ? `+${result.checks.image_size.score_earned} / 15 đ (ĐẠT)` : '0 / 15 đ (MẤT 15Đ)'}
                       </div>
                     </div>
-                    <div className="crit-val-badge" style={{ color: result.checks.brightness.passed ? '#34d399' : '#f87171' }} title="Độ khớp phổ màu với ảnh thẻ chuẩn — càng thấp càng tốt">
-                      {result.checks.brightness.optical_label || 'Đạt chuẩn'} — màu sắc khớp {Math.round((1 - Math.min(result.checks.brightness.bhattacharyya_distance, 1)) * 100)}%
+                    <div className={`crit-explain-row ${(result.checks.image_size.score_earned > 0) ? 'pass' : 'fail'}`}>
+                      {(result.checks.image_size.score_earned > 0) ? (
+                        <span>✅ <strong>Điểm đạt:</strong> {result.checks.image_size.friendly_pass || "Đúng tỉ lệ chuẩn 3:4 hoặc 4:6, kích thước sắc nét chuẩn in ấn."}</span>
+                      ) : (
+                        <span>❌ <strong>Lỗi sai:</strong> {result.checks.image_size.friendly_fail || result.checks.image_size.message}</span>
+                      )}
+                    </div>
+                    <div className="crit-tech-row">
+                      <span>Đo đạc: {result.checks.image_size.width}×{result.checks.image_size.height} px · Tỉ lệ: {result.checks.image_size.aspect_ratio || "3:4"}</span>
+                      <span>Yêu cầu: Chuẩn 3:4 hoặc 4:6, Min 400×500 px</span>
                     </div>
                   </div>
 
-                  {/* 6. Độ đồng nhất nền */}
-                  <div className="criterion-item">
-                    <div className="crit-left">
-                      <div className={`crit-status-icon ${result.checks.background_uniformity.passed ? 'pass' : 'fail'}`}>
-                        {result.checks.background_uniformity.passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                  {/* 2. Số lượng khuôn mặt (15đ) */}
+                  <div className={`criterion-item ${(result.checks.face_count.score_earned > 0) ? 'pass-item' : 'fail-item'}`}>
+                    <div className="crit-item-top">
+                      <div className="crit-left">
+                        <div className={`crit-status-icon ${(result.checks.face_count.score_earned > 0) ? 'pass' : 'fail'}`}>
+                          {(result.checks.face_count.score_earned > 0) ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                        </div>
+                        <div className="crit-title">2. 👤 Số người chụp</div>
                       </div>
-                      <div>
-                        <div className="crit-title">6. 🖼️ Phông nền có sạch không?</div>
-                        <div className="crit-desc">{result.checks.background_uniformity.message}</div>
+                      <div className={`crit-score-badge ${(result.checks.face_count.score_earned > 0) ? 'pass' : 'fail'}`}>
+                        {(result.checks.face_count.score_earned > 0) ? `+${result.checks.face_count.score_earned} / 15 đ (ĐẠT)` : '0 / 15 đ (MẤT 15Đ)'}
                       </div>
                     </div>
-                    <div className="crit-val-badge" title="Độ loang lổ nền: càng thấp càng đồng màu. Vượt ngưỡng = nền không đều">
-                      Độ loang lổ: {result.checks.background_uniformity.avg_std_dev} / max {result.checks.background_uniformity.threshold_max_std}
+                    <div className={`crit-explain-row ${(result.checks.face_count.score_earned > 0) ? 'pass' : 'fail'}`}>
+                      {(result.checks.face_count.score_earned > 0) ? (
+                        <span>✅ <strong>Điểm đạt:</strong> {result.checks.face_count.friendly_pass || "Có đúng 1 người chụp, mắt nhìn thẳng vào ống kính."}</span>
+                      ) : (
+                        <span>❌ <strong>Lỗi sai:</strong> {result.checks.face_count.friendly_fail || result.checks.face_count.message}</span>
+                      )}
+                    </div>
+                    <div className="crit-tech-row">
+                      <span>Nhận diện: Phát hiện {result.checks.face_count.detected_count} khuôn mặt</span>
+                      <span>Yêu cầu: Duy nhất 1 người</span>
+                    </div>
+                  </div>
+
+                  {/* 3. Tỷ lệ chiều cao khuôn mặt (20đ) */}
+                  <div className={`criterion-item ${(result.checks.face_height_ratio.score_earned > 0) ? 'pass-item' : 'fail-item'}`}>
+                    <div className="crit-item-top">
+                      <div className="crit-left">
+                        <div className={`crit-status-icon ${(result.checks.face_height_ratio.score_earned > 0) ? 'pass' : 'fail'}`}>
+                          {(result.checks.face_height_ratio.score_earned > 0) ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                        </div>
+                        <div className="crit-title">3. 🔍 Tỉ lệ khuôn mặt</div>
+                      </div>
+                      <div className={`crit-score-badge ${(result.checks.face_height_ratio.score_earned > 0) ? 'pass' : 'fail'}`}>
+                        {(result.checks.face_height_ratio.score_earned > 0) ? `+${result.checks.face_height_ratio.score_earned} / 20 đ (ĐẠT)` : '0 / 20 đ (MẤT 20Đ)'}
+                      </div>
+                    </div>
+                    <div className={`crit-explain-row ${(result.checks.face_height_ratio.score_earned > 0) ? 'pass' : 'fail'}`}>
+                      {(result.checks.face_height_ratio.score_earned > 0) ? (
+                        <span>✅ <strong>Điểm đạt:</strong> {result.checks.face_height_ratio.friendly_pass || "Khuôn mặt chiếm tỷ lệ vừa vặn, chuẩn bố cục ICAO."}</span>
+                      ) : (
+                        <span>❌ <strong>Lỗi sai:</strong> {result.checks.face_height_ratio.friendly_fail || result.checks.face_height_ratio.message}</span>
+                      )}
+                    </div>
+                    <div className="crit-tech-row">
+                      <span>Tỷ lệ mặt thực tế: {(result.checks.face_height_ratio.ratio * 100).toFixed(1)}% chiều cao ảnh</span>
+                      <span>Yêu cầu: {((result.checks.face_height_ratio.threshold_min || 0.30) * 100).toFixed(0)}% – {((result.checks.face_height_ratio.threshold_max || 0.70) * 100).toFixed(0)}%</span>
+                    </div>
+                  </div>
+
+                  {/* 4. Độ rõ nét (15đ) */}
+                  <div className={`criterion-item ${(result.checks.sharpness.score_earned > 0) ? 'pass-item' : 'fail-item'}`}>
+                    <div className="crit-item-top">
+                      <div className="crit-left">
+                        <div className={`crit-status-icon ${(result.checks.sharpness.score_earned > 0) ? 'pass' : 'fail'}`}>
+                          {(result.checks.sharpness.score_earned > 0) ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                        </div>
+                        <div className="crit-title">4. ⚡ Độ nét chi tiết</div>
+                      </div>
+                      <div className={`crit-score-badge ${(result.checks.sharpness.score_earned > 0) ? 'pass' : 'fail'}`}>
+                        {(result.checks.sharpness.score_earned > 0) ? `+${result.checks.sharpness.score_earned} / 15 đ (ĐẠT)` : '0 / 15 đ (MẤT 15Đ)'}
+                      </div>
+                    </div>
+                    <div className={`crit-explain-row ${(result.checks.sharpness.score_earned > 0) ? 'pass' : 'fail'}`}>
+                      {(result.checks.sharpness.score_earned > 0) ? (
+                        <span>✅ <strong>Điểm đạt:</strong> {result.checks.sharpness.friendly_pass || "Ảnh rất sắc nét, mắt và tóc nhìn rõ từng sợi."}</span>
+                      ) : (
+                        <span>❌ <strong>Lỗi sai:</strong> {result.checks.sharpness.friendly_fail || result.checks.sharpness.message}</span>
+                      )}
+                    </div>
+                    <div className="crit-tech-row">
+                      <span>Điểm nét Laplacian: {result.checks.sharpness.laplacian_variance}</span>
+                      <span>Ngưỡng tối thiểu: 75.0</span>
+                    </div>
+                  </div>
+
+                  {/* 5. Ánh sáng & Màu sắc tổng thể (20đ) */}
+                  <div className={`criterion-item ${(result.checks.brightness.score_earned > 0) ? 'pass-item' : 'fail-item'}`}>
+                    <div className="crit-item-top">
+                      <div className="crit-left">
+                        <div className={`crit-status-icon ${(result.checks.brightness.score_earned > 0) ? 'pass' : 'fail'}`}>
+                          {(result.checks.brightness.score_earned > 0) ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                        </div>
+                        <div className="crit-title" style={{ color: (result.checks.brightness.score_earned > 0) ? '#93c5fd' : 'inherit' }}>
+                          ★ 5. ☀️ Ánh sáng & Màu sắc
+                        </div>
+                      </div>
+                      <div className={`crit-score-badge ${(result.checks.brightness.score_earned > 0) ? 'pass' : 'fail'}`}>
+                        {(result.checks.brightness.score_earned > 0) ? `+${result.checks.brightness.score_earned} / 20 đ (ĐẠT)` : '0 / 20 đ (MẤT 20Đ)'}
+                      </div>
+                    </div>
+                    <div className={`crit-explain-row ${(result.checks.brightness.score_earned > 0) ? 'pass' : 'fail'}`}>
+                      {(result.checks.brightness.score_earned > 0) ? (
+                        <span>✅ <strong>Điểm đạt:</strong> {result.checks.brightness.friendly_pass || "Ánh sáng hài hòa, khuôn mặt sáng rõ, màu sắc khớp chuẩn."}</span>
+                      ) : (
+                        <span>❌ <strong>Lỗi sai:</strong> {result.checks.brightness.friendly_fail || result.checks.brightness.message}</span>
+                      )}
+                    </div>
+                    <div className="crit-tech-row">
+                      <span>Đo đạc: Độ sáng {result.checks.brightness.mean_intensity} (chuẩn 90–215) · Sai lệch màu Bhattacharyya: {result.checks.brightness.bhattacharyya_distance}</span>
+                      <span>Yêu cầu dB ≤ 0.50</span>
+                    </div>
+                  </div>
+
+                  {/* 6. Phông nền sạch đều (15đ) */}
+                  <div className={`criterion-item ${(result.checks.background_uniformity.score_earned > 0) ? 'pass-item' : 'fail-item'}`}>
+                    <div className="crit-item-top">
+                      <div className="crit-left">
+                        <div className={`crit-status-icon ${(result.checks.background_uniformity.score_earned > 0) ? 'pass' : 'fail'}`}>
+                          {(result.checks.background_uniformity.score_earned > 0) ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                        </div>
+                        <div className="crit-title">6. 🎨 Phông nền sạch đều</div>
+                      </div>
+                      <div className={`crit-score-badge ${(result.checks.background_uniformity.score_earned > 0) ? 'pass' : 'fail'}`}>
+                        {(result.checks.background_uniformity.score_earned > 0) ? `+${result.checks.background_uniformity.score_earned} / 15 đ (ĐẠT)` : '0 / 15 đ (MẤT 15Đ)'}
+                      </div>
+                    </div>
+                    <div className={`crit-explain-row ${(result.checks.background_uniformity.score_earned > 0) ? 'pass' : 'fail'}`}>
+                      {(result.checks.background_uniformity.score_earned > 0) ? (
+                        <span>✅ <strong>Điểm đạt:</strong> {result.checks.background_uniformity.friendly_pass || "Phông nền trơn phẳng, sạch bóng, không dính bóng đổ hay hoa văn."}</span>
+                      ) : (
+                        <span>❌ <strong>Lỗi sai:</strong> {result.checks.background_uniformity.friendly_fail || result.checks.background_uniformity.message}</span>
+                      )}
+                    </div>
+                    <div className="crit-tech-row">
+                      <span>Đo biến thiên màu nền: {result.checks.background_uniformity.avg_std_dev}</span>
+                      <span>Yêu cầu tối đa: {result.checks.background_uniformity.threshold_max_std}</span>
                     </div>
                   </div>
 
                 </div>
 
-                {/* Danh sách điểm tốt trong ảnh */}
-                {result.good_points && result.good_points.length > 0 && (
-                  <div className="good-points-container">
-                    <div className="good-points-title">
-                      <Sparkles size={16} /> Các điểm tốt trong ảnh ({result.good_points.length} tiêu chí đạt chuẩn):
-                    </div>
-                    <ul className="good-points-list">
-                      {result.good_points.map((gp, i) => (
-                        <li key={i}>{gp}</li>
-                      ))}
-                    </ul>
+              </div>
+            )}
+          </div>
+
+          {/* CỘT 3 (LỀ NGOÀI CÙNG PHÍA PHẢI): ĐÁNH GIÁ & GÓP Ý */}
+          <div className="card-glass col-feedback">
+            {!result ? (
+              <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-muted)' }}>
+                <Lightbulb size={40} style={{ opacity: 0.3, marginBottom: '12px' }} />
+                <h3 style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Đánh giá & Góp ý</h3>
+                <p style={{ fontSize: '0.82rem', marginTop: '6px' }}>
+                  Các nhận xét chi tiết, chỉ ra điểm đạt, lỗi sai và lời khuyên khắc phục sẽ hiển thị tại đây sau khi phân tích ảnh.
+                </p>
+              </div>
+            ) : (
+              <div>
+                <div className="feedback-col-header">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Sparkles size={18} style={{ color: '#a855f7' }} />
+                    <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#f1f5f9' }}>
+                      ĐÁNH GIÁ & GÓP Ý
+                    </span>
                   </div>
-                )}
+                  <span 
+                    className="crit-val-badge" 
+                    style={{ 
+                      color: result.overall_score >= 50 ? '#34d399' : '#f87171', 
+                      borderColor: result.overall_score >= 50 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
+                      fontSize: '0.72rem'
+                    }}
+                  >
+                    {result.verdict === 'PASS' ? 'ĐẠT CHUẨN' : result.verdict === 'WARNING' ? 'TẠM ĐẠT' : 'KHÔNG ĐẠT'}
+                  </span>
+                </div>
 
-                {/* Danh sách lỗi / cần hoàn thiện */}
-                {result.reasons && result.reasons.length > 0 && (
-                  <div className="reasons-container">
-                    <div className="reasons-title">
-                      <AlertTriangle size={16} /> {result.verdict === 'WARNING' ? 'Các điểm cần cải thiện:' : 'Các điểm chưa đạt:'}
+                <div className="feedback-summary-group" style={{ marginTop: '14px' }}>
+                  {/* Danh sách điểm tốt trong ảnh */}
+                  {result.good_points && result.good_points.length > 0 && (
+                    <div className="good-points-container">
+                      <div className="good-points-title">
+                        <Sparkles size={16} /> Các điểm tốt ({result.good_points.length} tiêu chí đạt chuẩn):
+                      </div>
+                      <ul className="good-points-list">
+                        {result.good_points.map((gp, i) => (
+                          <li key={i}>{gp}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="reasons-list">
-                      {result.reasons.map((r, i) => (
-                        <li key={i}>{r}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                  )}
 
-                {/* Lời khuyên khắc phục */}
-                {result.recommendations && result.recommendations.length > 0 && (
-                  <div className="recommendations-container">
-                    <div className="recommendations-title">
-                      <Lightbulb size={16} /> Lời khuyên khắc phục:
+                  {/* Danh sách lỗi / cần hoàn thiện */}
+                  {result.reasons && result.reasons.length > 0 && (
+                    <div className="reasons-container">
+                      <div className="reasons-title">
+                        <AlertTriangle size={16} /> {result.verdict === 'WARNING' ? 'Các điểm cần cải thiện:' : 'Các điểm chưa đạt:'}
+                      </div>
+                      <ul className="reasons-list">
+                        {result.reasons.map((r, i) => (
+                          <li key={i}>{r}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="recommendations-list">
-                      {result.recommendations.map((rec, i) => (
-                        <li key={i}>{rec}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                  )}
 
-
+                  {/* Lời khuyên khắc phục */}
+                  {result.recommendations && result.recommendations.length > 0 && (
+                    <div className="recommendations-container">
+                      <div className="recommendations-title">
+                        <Lightbulb size={16} /> Lời khuyên khắc phục:
+                      </div>
+                      <ul className="recommendations-list">
+                        {result.recommendations.map((rec, i) => (
+                          <li key={i}>{rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

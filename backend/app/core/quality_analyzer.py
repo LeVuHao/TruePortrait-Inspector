@@ -83,8 +83,12 @@ def analyze_quality(
     corner_means = [float(np.mean(c)) for c in corner_rois]
     is_white_bg = (np.mean(corner_means) >= 200.0) and (abs(corner_means[0] - corner_means[1]) < 25.0) and (abs(corner_means[2] - corner_means[3]) < 25.0)
 
-    # Nếu không phải phông nền trắng đồng nhất mà có pixel >= 245 vượt ngưỡng 3.5% -> Có đèn rọi chói / cháy sáng
-    has_scene_glare = (not is_white_bg) and (highlight_clipping_ratio > max_highlight_ratio)
+    # Đo chói sáng trên phần trên khung hình (đầu, mặt, phông nền trên - loại trừ phần dưới là áo sơ mi trắng)
+    upper_h = int(img_h * 0.65) if (face_boxes and len(face_boxes) > 0) else img_h
+    upper_highlight_ratio = float(np.mean(image_gray[:upper_h, :] >= 245))
+
+    # Nếu không phải phông nền trắng mà vùng trên có pixel >= 245 vượt ngưỡng -> Có đèn rọi chói / cháy sáng
+    has_scene_glare = (not is_white_bg) and (upper_highlight_ratio > max_highlight_ratio)
 
     # 3. Phân tích quang học chuyên sâu trên vùng khuôn mặt cốt lõi (Inner Face ROI)
     face_photometry = {
@@ -137,23 +141,29 @@ def analyze_quality(
                 }
 
     # ĐÁNH GIÁ CHUẨN ĐỘ SÁNG KHOA HỌC:
-    # 1. Trung bình toàn ảnh trong dải chuẩn [90, 210]
+    # 1. Trung bình toàn ảnh trong dải chuẩn [90, 215] (nới lên 222 nếu nền trắng sáng tự nhiên)
     # 2. Độ tương phản Std >= 25.0
-    # 3. Khoảng cách Bhattacharyya với profile chuẩn <= 0.45
-    # 4. Không bị chói lóa / cháy sáng đèn rọi (has_scene_glare == False)
+    # 3. Khoảng cách Bhattacharyya với profile chuẩn <= 0.50
+    # 4. Không bị chói lóa ánh đèn ở phần trên khung hình (has_scene_glare == False)
     # 5. Vùng mặt (Face ROI) phải đạt chuẩn quang học, không chói bóng hay lệch sáng gắt
-    global_bright_passed = (min_mean <= brightness_mean <= max_mean) and (contrast_std >= min_contrast) and (bhattacharyya_dist <= 0.45) and (not has_scene_glare)
+    effective_max_mean = max_mean if not is_white_bg else max(max_mean, 222.0)
+    global_bright_passed = (
+        (min_mean <= brightness_mean <= effective_max_mean) and 
+        (contrast_std >= min_contrast) and 
+        (bhattacharyya_dist <= 0.50) and 
+        (not has_scene_glare)
+    )
     brightness_passed = global_bright_passed and face_photometry["passed"]
     
     bright_msg = []
     if has_scene_glare:
-        bright_msg.append(f"Ảnh bị chói sáng / cháy sáng cục bộ ({highlight_clipping_ratio*100:.1f}% diện tích bị lóa trắng).")
+        bright_msg.append(f"Vùng trên khung hình có điểm chói lóa ánh đèn ({upper_highlight_ratio*100:.1f}% diện tích bị lóa trắng).")
     if face_photometry["issues"]:
         bright_msg.extend(face_photometry["issues"])
     if optical_cls["status"] == "DARK" or brightness_mean < min_mean:
         bright_msg.append(f"Ảnh thiếu sáng nghiêm trọng (Mean: {brightness_mean:.1f}, Skewness: {skewness_val:+.2f}).")
-    elif brightness_mean > max_mean:
-        bright_msg.append(f"Toàn bộ ảnh bị cháy sáng quá mức (Mean: {brightness_mean:.1f} > {max_mean}).")
+    elif brightness_mean > effective_max_mean:
+        bright_msg.append(f"Toàn bộ ảnh bị cháy sáng quá mức (Mean: {brightness_mean:.1f} > {effective_max_mean}).")
     elif contrast_std < min_contrast:
         bright_msg.append(f"Độ tương phản thấp / bạc màu (Std: {contrast_std:.1f} < {min_contrast}).")
         
@@ -178,11 +188,12 @@ def analyze_quality(
             "kurtosis": round(kurtosis_val, 3),
             "mean_saturation": moments["mean_saturation"],
             "highlight_clipping_ratio": round(highlight_clipping_ratio, 4),
+            "upper_highlight_ratio": round(upper_highlight_ratio, 4),
             "shadow_clipping_ratio": round(shadow_clipping_ratio, 4),
             "bhattacharyya_distance": round(bhattacharyya_dist, 3),
             "chi_square_distance": comparison["chi_square_distance"],
             "threshold_min_mean": min_mean,
-            "threshold_max_mean": max_mean,
+            "threshold_max_mean": effective_max_mean,
             "threshold_min_contrast": min_contrast,
             "threshold_max_highlight": max_highlight_ratio,
             "face_photometry": face_photometry,
